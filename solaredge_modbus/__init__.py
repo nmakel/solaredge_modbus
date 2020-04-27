@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import enum
 
 from pymodbus.constants import Endian
