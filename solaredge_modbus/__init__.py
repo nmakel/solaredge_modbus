@@ -9,6 +9,7 @@ from pymodbus.register_read_message import ReadHoldingRegistersResponse
 
 RETRIES = 3
 TIMEOUT = 1
+UNIT = 1
 
 
 class inverterDID(enum.Enum):
@@ -88,7 +89,10 @@ inverter_status_map = [
 
 
 class Inverter:
+
     model = "SolarEdge"
+    stopbits = 1
+    parity = "N"
     baud = 115200
 
     registers = {
@@ -135,33 +139,53 @@ class Inverter:
 
     def __init__(
         self, host=False, port=False,
-        device=False, baud=False, unit=1
+        device=False, stopbits=False, parity=False, baud=False,
+        timeout=TIMEOUT, retries=RETRIES, unit=UNIT
     ):
         self.host = host
         self.port = port
-        self.unit = unit
         self.device = device
+
+        if stopbits:
+            self.stopbits = stopbits
+
+        if parity:
+            self.parity = parity
 
         if baud:
             self.baud = baud
 
+        self.timeout = timeout
+        self.retries = retries
+        self.unit = unit
+
         if device:
             self.mode = connectionType.RTU
-            self.client = ModbusSerialClient(method="rtu", port=self.device, timeout=TIMEOUT)
+            self.client = ModbusSerialClient(
+                method="rtu",
+                port=self.device,
+                stopbits=self.stopbits,
+                parity=self.parity,
+                baudrate=self.baud,
+                timeout=self.timeout)
         else:
             self.mode = connectionType.TCP
-            self.client = ModbusTcpClient(host=self.host, port=self.port)
+            self.client = ModbusTcpClient(
+                host=self.host,
+                port=self.port,
+                timeout=self.timeout
+            )
 
     def __repr__(self):
         if self.mode == connectionType.RTU:
-            return f"{self.model}({self.device}, baud={self.baud}, unit={hex(self.unit)})"
+            return f"{self.model}({self.device}, {self.mode}: stopbits={self.stopbits}, parity={self.parity}, baud={self.baud}, timeout={self.timeout}, unit={hex(self.unit)})"
         elif self.mode == connectionType.TCP:
-            return f"{self.model}({self.host}:{self.port}, unit={hex(self.unit)})"
+            return f"{self.model}({self.host}:{self.port}, {self.mode}: timeout={self.timeout}, unit={hex(self.unit)})"
         else:
             return f"<{self.__class__.__module__}.{self.__class__.__name__} object at {hex(id(self))}>"
 
     def _read_holding_registers(self, address, length):
-        for i in range(RETRIES):
+        for i in range(self.retries):
             result = self.client.read_holding_registers(address=address, count=length, unit=self.unit)
 
             if isinstance(result, ReadHoldingRegistersResponse):
