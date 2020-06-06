@@ -90,7 +90,7 @@ inverter_status_map = [
 
 class Inverter:
 
-    model = "SolarEdge"
+    model = "Inverter"
     stopbits = 1
     parity = "N"
     baud = 115200
@@ -224,6 +224,52 @@ class Inverter:
         except NotImplementedError:
             raise
 
+    def _read_all(self, values):
+        addr_min = False
+        addr_max = False
+        addr_type = False
+
+        for k, v in values.items():
+            v_addr = v[0]
+            v_length = v[1]
+            v_type = v[2]
+
+            if not addr_min:
+                addr_min = v_addr
+            if not addr_max:
+                addr_max = v_addr
+            if not addr_type:
+                addr_type = v_type
+
+            if v_addr < addr_min:
+                addr_min = v_addr
+            if v_addr > addr_max:
+                addr_max = v_addr + v_length
+        
+        results = {}
+
+        try:
+            if addr_type == registerType.HOLDING:
+                data = self._read_holding_registers(addr_min, (addr_max - addr_min))
+                offset = addr_min
+                
+                for k, v in values.items():
+                    address, length, rtype, dtype, vtype, label, fmt = v
+
+                    if address > offset:
+                        skip_bytes = (address - offset)
+                        offset += skip_bytes
+                        data.skip_bytes(skip_bytes * 2)
+
+                    results[k] = self._decode_value(data, length, dtype, vtype)
+                    offset += length
+            else:
+                raise NotImplementedError(addr_type)
+        except NotImplementedError:
+            raise
+
+        return results
+
     def connected(self):
         return bool(self.client.connect())
 
@@ -231,13 +277,15 @@ class Inverter:
         if key not in self.registers:
             raise KeyError(key)
 
-        return self._read(self.registers[key])
+        return {key: self._read(self.registers[key])}
 
     def read_all(self, rtype=False):
         if rtype:
-            return {k: self.read(k) for k, v in self.registers.items() if (v[2] == rtype)}
+            registers = {k: v for k, v in self.registers.items() if (v[2] == rtype)}
         else:
-            return {k: self.read(k) for k, v in self.registers.items()}
+            registers = {k: v for k, v in self.registers.items()}
+
+        return self._read_all(registers)
 
     def pprint(self):
         values = self.read_all()
