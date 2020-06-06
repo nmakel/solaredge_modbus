@@ -139,7 +139,9 @@ Reading a single input register by name:
 
 ```
     >>> inverter.read("current")
-    12.89
+    {
+        'current': 895
+    }
 ```
 
 Read all input registers using`read_all()`:
