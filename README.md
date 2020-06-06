@@ -17,18 +17,45 @@ or install the package from PyPi:
 The script `example.py` provides a minimal example of connecting to and displaying all registers from a SolarEdge power inverter over ModbusTCP.
 
 ```
-usage: example.py [-h] [--unit UNIT] host port
+usage: example.py [-h] [--timeout TIMEOUT] [--unit UNIT] [--json] host port
 
 positional arguments:
-  host         ModbusTCP address
-  port         ModbusTCP port
+  host               ModbusTCP address
+  port               ModbusTCP port
 
 optional arguments:
-  -h, --help   show this help message and exit
-  --unit UNIT  Modbus unit
+  -h, --help         show this help message and exit
+  --timeout TIMEOUT  Connection timeout
+  --unit UNIT        Modbus unit
+  --json             Output as JSON
 ```
 
 Output:
+
+```
+Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1):
+
+Registers:
+    Model: SE3500H-RW000BNN4
+    Type: Single Phase
+    Version: 0004.0009.0030
+    Serial: 123ABC12
+    Status: Producing
+    Temperature: 49.79°C
+    Current: 8.93A
+    Voltage: 240.20V
+    Power: 2141.80W
+    Frequency: 50.00Hz
+    Power (Apparent): 2149.60VA
+    Power (Reactive): 183.20VA
+    Power Factor: 99.69%
+    Total Energy: 3466757Wh
+    DC Current: 5.68A
+    DC Voltage: 382.50V
+    DC Power: 2173.50W
+```
+
+Passing `--json` returns:
 
 ```
 {
@@ -72,27 +99,6 @@ Output:
     'status': 4,
     'vendor_status': 0
 }
-
-Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1):
-
-Registers:
-    Model: SE3500H-RW000BNN4
-    Type: Single Phase
-    Version: 0004.0009.0030
-    Serial: 123ABC12
-    Status: Producing
-    Temperature: 49.79°C
-    Current: 8.93A
-    Voltage: 240.20V
-    Power: 2141.80W
-    Frequency: 50.00Hz
-    Power (Apparent): 2149.60VA
-    Power (Reactive): 183.20VA
-    Power Factor: 99.69%
-    Total Energy: 3466757Wh
-    DC Current: 5.68A
-    DC Voltage: 382.50V
-    DC Power: 2173.50W
 ```
 
 ## Examples
