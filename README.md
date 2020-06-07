@@ -197,32 +197,6 @@ Read all input registers using`read_all()`:
     }
 ```
 
-To pretty print all registers *with* formatting and units:
-
-```
-    >>> inverter.pprint()
-    Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1):
-
-    Registers:
-        Model: SE3500H-RW000BNN4
-        Type: Single Phase
-        Version: 0004.0009.0030
-        Serial: 123ABC12
-        Status: Producing
-        Temperature: 49.79°C
-        Current: 8.93A
-        Voltage: 240.20V
-        Power: 2141.80W
-        Frequency: 50.00Hz
-        Power (Apparent): 2149.60VA
-        Power (Reactive): 183.20VA
-        Power Factor: 99.69%
-        Total Energy: 3466757Wh
-        DC Current: 5.68A
-        DC Voltage: 382.50V
-        DC Power: 2173.50W
-```
-
 If you need more information about a particular register, to look up the units or enumerations, for example:
 
 ```
