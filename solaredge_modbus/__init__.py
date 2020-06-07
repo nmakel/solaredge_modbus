@@ -249,19 +249,20 @@ class Inverter:
                 addr_min = v_addr
             if v_addr > addr_max:
                 addr_max = v_addr + v_length
-        
+
         results = {}
+        offset = addr_min
+        length = addr_max - addr_min
 
         try:
             if addr_type == registerType.HOLDING:
-                data = self._read_holding_registers(addr_min, (addr_max - addr_min))
-                offset = addr_min
-                
+                data = self._read_holding_registers(offset, length)
+
                 for k, v in values.items():
                     address, length, rtype, dtype, vtype, label, fmt = v
 
                     if address > offset:
-                        skip_bytes = (address - offset)
+                        skip_bytes = address - offset
                         offset += skip_bytes
                         data.skip_bytes(skip_bytes * 2)
 
