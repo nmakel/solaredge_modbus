@@ -92,54 +92,12 @@ INVERTER_STATUS_MAP = [
 ]
 
 
-class Inverter:
+class SolarEdge:
 
-    model = "Inverter"
+    model = "SolarEdge"
     stopbits = 1
     parity = "N"
     baud = 115200
-
-    registers = {
-        "c_model": (0x9c54, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", ""),
-        "c_version": (0x9c6c, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", ""),
-        "c_serialnumber": (0x9c74, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", ""),
-        "c_deviceaddress": (0x9c84, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", ""),
-        "c_sunspec_did": (0x9c85, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", c_sunspec_did_map),
-        "current": (0x9c87, 1, registerType.HOLDING, registerDataType.UINT16, int, "Current", "A"),
-        "p1_current": (0x9c88, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1 Current", "A"),
-        "p2_current": (0x9c89, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2 Current", "A"),
-        "p3_current": (0x9c8a, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3 Current", "A"),
-        "current_scale": (0x9c8b, 1, registerType.HOLDING, registerDataType.INT16, int, "Current Scale Factor", ""),
-        "p1_voltage": (0x9c8c, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1 Voltage", "V"),
-        "p2_voltage": (0x9c8d, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2 Voltage", "V"),
-        "p3_voltage": (0x9c8e, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3 Voltage", "V"),
-        "p1n_voltage": (0x9c8f, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1-N Voltage", "V"),
-        "p2n_voltage": (0x9c90, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2-N Voltage", "V"),
-        "p3n_voltage": (0x9c91, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3-N Voltage", "V"),
-        "voltage_scale": (0x9c92, 1, registerType.HOLDING, registerDataType.INT16, int, "Voltage Scale Factor", ""),
-        "power_ac": (0x9c93, 1, registerType.HOLDING, registerDataType.INT16, int, "Power", "W"),
-        "power_ac_scale": (0x9c94, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Scale Factor", ""),
-        "frequency": (0x9c95, 1, registerType.HOLDING, registerDataType.UINT16, int, "Frequency", "Hz"),
-        "frequency_scale": (0x9c96, 1, registerType.HOLDING, registerDataType.INT16, int, "Frequency Scale Factor", ""),
-        "power_apparent": (0x9c97, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent)", "VA"),
-        "power_apparent_scale": (0x9c98, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent) Scale Factor", ""),
-        "power_reactive": (0x9c99, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive)", "VA"),
-        "power_reactive_scale": (0x9c9a, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive) Scale Factor", ""),
-        "power_factor": (0x9c9b, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor", "%"),
-        "power_factor_scale": (0x9c9c, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor Scale Factor", ""),
-        "energy_total": (0x9c9d, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Energy", "Wh"),
-        "energy_total_scale": (0x9c9f, 1, registerType.HOLDING, registerDataType.UINT16, int, "Total Energy Scale Factor", ""),
-        "current_dc": (0x9ca0, 1, registerType.HOLDING, registerDataType.UINT16, int, "DC Current", "A"),
-        "current_dc_scale": (0x9ca1, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Current Scale Factor", ""),
-        "voltage_dc": (0x9ca2, 1, registerType.HOLDING, registerDataType.UINT16, int, "DC Voltage", "V"),
-        "voltage_dc_scale": (0x9ca3, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Voltage Scale Factor", ""),
-        "power_dc": (0x9ca4, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Power", "W"),
-        "power_dc_scale": (0x9ca5, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Power Scale Factor", ""),
-        "temperature": (0x9ca7, 1, registerType.HOLDING, registerDataType.INT16, int, "Temperature", "°C"),
-        "temperature_scale": (0x9caa, 1, registerType.HOLDING, registerDataType.INT16, int, "Temperature Scale Factor", ""),
-        "status": (0x9cab, 1, registerType.HOLDING, registerDataType.UINT16, int, "Status", inverter_status_map),
-        "vendor_status": (0x9cac, 1, registerType.HOLDING, registerDataType.UINT16, int, "Vendor Status", ""),
-    }
 
     def __init__(
         self, host=False, port=False,
@@ -292,41 +250,52 @@ class Inverter:
 
         return self._read_all(registers)
 
-    def pprint(self):
-        values = self.read_all()
 
-        print(f"{self}:")
+class Inverter(SolarEdge):
 
-        print("\nRegisters:")
-        print(f"\tModel: {values['c_model']}")
-        print(f"\tType: {c_sunspec_did_map[str(values['c_sunspec_did'])]}")
-        print(f"\tVersion: {values['c_version']}")
-        print(f"\tSerial: {values['c_serialnumber']}")
-        print(f"\tStatus: {inverter_status_map[values['status']]}")
-        print(f"\tTemperature: {(values['temperature'] * (10 ** values['temperature_scale'])):.2f}{self.registers['temperature'][6]}")
+    def __init__(self, *args, **kwargs):
+        self.model = "Inverter"
 
-        print(f"\tCurrent: {(values['current'] * (10 ** values['temperature_scale'])):.2f}{self.registers['current'][6]}")
+        super().__init__(*args, **kwargs)
 
-        if values['c_sunspec_did'] is inverterDID.THREE_PHASE:
-            print(f"\tPhase 1 Current: {(values['p1_current'] * (10 ** values['current_scale'])):.2f}{self.registers['p1_current'][6]}")
-            print(f"\tPhase 2 Current: {(values['p2_current'] * (10 ** values['current_scale'])):.2f}{self.registers['p2_current'][6]}")
-            print(f"\tPhase 3 Current: {(values['p3_current'] * (10 ** values['current_scale'])):.2f}{self.registers['p3_current'][6]}")
-            print(f"\tPhase 1 voltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{self.registers['p1_voltage'][6]}")
-            print(f"\tPhase 2 voltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{self.registers['p1_voltage'][6]}")
-            print(f"\tPhase 3 voltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{self.registers['p1_voltage'][6]}")
-            print(f"\tPhase 1-N voltage: {(values['p1n_voltage'] * (10 ** values['voltage_scale'])):.2f}{self.registers['p1n_voltage'][6]}")
-            print(f"\tPhase 2-N voltage: {(values['p2n_voltage'] * (10 ** values['voltage_scale'])):.2f}{self.registers['p2n_voltage'][6]}")
-            print(f"\tPhase 3-N voltage: {(values['p3n_voltage'] * (10 ** values['voltage_scale'])):.2f}{self.registers['p3n_voltage'][6]}")
-        else:
-            print(f"\tVoltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{self.registers['p1_voltage'][6]}")
-
-        print(f"\tPower: {(values['power_ac'] * (10 ** values['power_ac_scale'])):.2f}{self.registers['power_ac'][6]}")
-        print(f"\tFrequency: {(values['frequency'] * (10 ** values['frequency_scale'])):.2f}{self.registers['frequency'][6]}")
-        print(f"\tPower (Apparent): {(values['power_apparent'] * (10 ** values['power_apparent_scale'])):.2f}{self.registers['power_apparent'][6]}")
-        print(f"\tPower (Reactive): {(values['power_reactive'] * (10 ** values['power_reactive_scale'])):.2f}{self.registers['power_reactive'][6]}")
-        print(f"\tPower Factor: {(values['power_factor'] * (10 ** values['power_factor_scale'])):.2f}{self.registers['power_factor'][6]}")
-        print(f"\tTotal Energy: {(values['energy_total'] * (10 ** values['energy_total_scale']))}{self.registers['energy_total'][6]}")
-
-        print(f"\tDC Current: {(values['current_dc'] * (10 ** values['current_dc_scale'])):.2f}{self.registers['current_dc'][6]}")
-        print(f"\tDC Voltage: {(values['voltage_dc'] * (10 ** values['voltage_dc_scale'])):.2f}{self.registers['voltage_dc'][6]}")
-        print(f"\tDC Power: {(values['power_dc'] * (10 ** values['power_dc_scale'])):.2f}{self.registers['power_dc'][6]}")
+        self.registers = {
+            "c_model": (0x9c54, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", ""),
+            "c_version": (0x9c6c, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", ""),
+            "c_serialnumber": (0x9c74, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", ""),
+            "c_deviceaddress": (0x9c84, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", ""),
+            "c_sunspec_did": (0x9c85, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", C_SUNSPEC_DID_MAP),
+            "current": (0x9c87, 1, registerType.HOLDING, registerDataType.UINT16, int, "Current", "A"),
+            "p1_current": (0x9c88, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1 Current", "A"),
+            "p2_current": (0x9c89, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2 Current", "A"),
+            "p3_current": (0x9c8a, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3 Current", "A"),
+            "current_scale": (0x9c8b, 1, registerType.HOLDING, registerDataType.INT16, int, "Current Scale Factor", ""),
+            "p1_voltage": (0x9c8c, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1 Voltage", "V"),
+            "p2_voltage": (0x9c8d, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2 Voltage", "V"),
+            "p3_voltage": (0x9c8e, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3 Voltage", "V"),
+            "p1n_voltage": (0x9c8f, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1-N Voltage", "V"),
+            "p2n_voltage": (0x9c90, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2-N Voltage", "V"),
+            "p3n_voltage": (0x9c91, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3-N Voltage", "V"),
+            "voltage_scale": (0x9c92, 1, registerType.HOLDING, registerDataType.INT16, int, "Voltage Scale Factor", ""),
+            "power_ac": (0x9c93, 1, registerType.HOLDING, registerDataType.INT16, int, "Power", "W"),
+            "power_ac_scale": (0x9c94, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Scale Factor", ""),
+            "frequency": (0x9c95, 1, registerType.HOLDING, registerDataType.UINT16, int, "Frequency", "Hz"),
+            "frequency_scale": (0x9c96, 1, registerType.HOLDING, registerDataType.INT16, int, "Frequency Scale Factor", ""),
+            "power_apparent": (0x9c97, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent)", "VA"),
+            "power_apparent_scale": (0x9c98, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent) Scale Factor", ""),
+            "power_reactive": (0x9c99, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive)", "VA"),
+            "power_reactive_scale": (0x9c9a, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive) Scale Factor", ""),
+            "power_factor": (0x9c9b, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor", "%"),
+            "power_factor_scale": (0x9c9c, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor Scale Factor", ""),
+            "energy_total": (0x9c9d, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Energy", "Wh"),
+            "energy_total_scale": (0x9c9f, 1, registerType.HOLDING, registerDataType.UINT16, int, "Total Energy Scale Factor", ""),
+            "current_dc": (0x9ca0, 1, registerType.HOLDING, registerDataType.UINT16, int, "DC Current", "A"),
+            "current_dc_scale": (0x9ca1, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Current Scale Factor", ""),
+            "voltage_dc": (0x9ca2, 1, registerType.HOLDING, registerDataType.UINT16, int, "DC Voltage", "V"),
+            "voltage_dc_scale": (0x9ca3, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Voltage Scale Factor", ""),
+            "power_dc": (0x9ca4, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Power", "W"),
+            "power_dc_scale": (0x9ca5, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Power Scale Factor", ""),
+            "temperature": (0x9ca7, 1, registerType.HOLDING, registerDataType.INT16, int, "Temperature", "°C"),
+            "temperature_scale": (0x9caa, 1, registerType.HOLDING, registerDataType.INT16, int, "Temperature Scale Factor", ""),
+            "status": (0x9cab, 1, registerType.HOLDING, registerDataType.UINT16, int, "Status", INVERTER_STATUS_MAP),
+            "vendor_status": (0x9cac, 1, registerType.HOLDING, registerDataType.UINT16, int, "Vendor Status", "")
+        }
