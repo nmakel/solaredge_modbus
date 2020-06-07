@@ -12,10 +12,12 @@ TIMEOUT = 1
 UNIT = 1
 
 
-class inverterDID(enum.Enum):
-    SINGLE_PHASE = 101
-    SPLIT_PHASE = 102
-    THREE_PHASE = 103
+class sunspecDID(enum.Enum):
+    SINGLE_PHASE_INVERTER = 101
+    SPLIT_PHASE_INVERTER = 102
+    THREE_PHASE_INVERTER = 103
+    SINGLE_PHASE_METER = 104
+    THREE_PHASE_METER = 105
 
 
 class inverterStatus(enum.Enum):
@@ -54,7 +56,7 @@ class registerDataType(enum.Enum):
     STRING = 12
 
 
-sunspec_notimplemented = {
+SUNSPEC_NOTIMPLEMENTED = {
     "UINT16": 0xffff,
     "ACC16": 0x0000,
     "UINT32": 0xffffffff,
@@ -69,13 +71,15 @@ sunspec_notimplemented = {
     "STRING": "\x00"
 }
 
-c_sunspec_did_map = {
-    "101": "Single Phase",
-    "102": "Split Phase",
-    "103": "Three Phase"
+C_SUNSPEC_DID_MAP = {
+    "101": "Single Phase Inverter",
+    "102": "Split Phase Inverter",
+    "103": "Three Phase Inverter",
+    "104": "Single Phase Meter",
+    "105": "Three Phase Meter"
 }
 
-inverter_status_map = [
+INVERTER_STATUS_MAP = [
     "Undefined",
     "Off",
     "Sleeping",
@@ -206,7 +210,7 @@ class Inverter:
             else:
                 raise NotImplementedError(dtype)
 
-            if decoded == sunspec_notimplemented[dtype.name]:
+            if decoded == SUNSPEC_NOTIMPLEMENTED[dtype.name]:
                 return False
             else:
                 return vtype(decoded)
