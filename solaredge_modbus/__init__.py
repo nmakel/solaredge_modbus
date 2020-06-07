@@ -215,19 +215,20 @@ class SolarEdge:
         try:
             if addr_type == registerType.HOLDING:
                 data = self._read_holding_registers(offset, length)
-
-                for k, v in values.items():
-                    address, length, rtype, dtype, vtype, label, fmt = v
-
-                    if address > offset:
-                        skip_bytes = address - offset
-                        offset += skip_bytes
-                        data.skip_bytes(skip_bytes * 2)
-
-                    results[k] = self._decode_value(data, length, dtype, vtype)
-                    offset += length
             else:
                 raise NotImplementedError(addr_type)
+            
+            for k, v in values.items():
+                address, length, rtype, dtype, vtype, label, fmt = v
+
+                if address > offset:
+                    skip_bytes = address - offset
+                    offset += skip_bytes
+                    data.skip_bytes(skip_bytes * 2)
+
+                results[k] = self._decode_value(data, length, dtype, vtype)
+                offset += length
+
         except NotImplementedError:
             raise
 
