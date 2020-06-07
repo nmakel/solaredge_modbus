@@ -217,7 +217,7 @@ class SolarEdge:
                 data = self._read_holding_registers(offset, length)
             else:
                 raise NotImplementedError(addr_type)
-            
+
             for k, v in values.items():
                 address, length, rtype, dtype, vtype, label, fmt = v
 
