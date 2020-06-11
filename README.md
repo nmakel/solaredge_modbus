@@ -115,7 +115,7 @@ While if you are using a serial Modbus connection you can specify:
 `baud = baud rate of your device, defaults to product default, optional`  
 `unit = Modbus unit id, defaults to 1, optional`
 
-Connecting to the meter:
+Connecting to the inverter:
 
 ```
     >>> import solaredge_modbus
@@ -127,7 +127,7 @@ Connecting to the meter:
     >>> inverter = solaredge_modbus.Inverter(device="/dev/ttyUSB0", baud=115200)
 ```
 
-Test the connection:
+Test the connection, remember that only a single connection at a time is allowed:
 
 ```
     >>> inverter.connected()
@@ -150,7 +150,7 @@ Reading a single input register by name:
     }
 ```
 
-Read all input registers using`read_all()`:
+Read all input registers using `read_all()`:
 
 ```
     >>> inverter.read_all()
@@ -203,6 +203,10 @@ If you need more information about a particular register, to look up the units o
     >>> inverter.registers["current"]
         # address, length, type, datatype, valuetype, name, unit
         (40071, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Current', 'A')
+
+    >>> inverter.registers["status"]
+        # address, length, type, datatype, valuetype, name, unit
+        (40107, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Status', ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'])
 ```
 
 ## Contributing
