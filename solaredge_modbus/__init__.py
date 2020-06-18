@@ -344,7 +344,7 @@ class Meter(SolarEdge):
 
         super().__init__(*args, **kwargs)
 
-        self.registers = {
+        self.registers_map = {
             "1": {
                 "c_model": (0x9ccb, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
                 "c_option": (0x9cdb, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
@@ -370,3 +370,4 @@ class Meter(SolarEdge):
                 "c_sunspec_did": (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
             }
         }
+        self.registers = self.registers_map[str(self.offset)]
