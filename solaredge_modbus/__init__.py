@@ -291,7 +291,7 @@ class SolarEdge:
     def meters(self):
         meters = {k: self._read(v) for k, v in self.meter_dids.items()}
 
-        return {k: Meter(offset=k, parent=self) for k, v in meters.items() if v}
+        return {f"Meter{k}": Meter(offset=int(k), parent=self) for k, v in meters.items() if v}
 
 
 class Inverter(SolarEdge):
