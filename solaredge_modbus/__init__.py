@@ -102,41 +102,62 @@ class SolarEdge:
     def __init__(
         self, host=False, port=False,
         device=False, stopbits=False, parity=False, baud=False,
-        timeout=TIMEOUT, retries=RETRIES, unit=UNIT
+        timeout=TIMEOUT, retries=RETRIES, unit=UNIT,
+        parent=False
     ):
-        self.host = host
-        self.port = port
-        self.device = device
+        if parent:
+            self.client = parent.client
+            self.mode = parent.mode
+            self.client = parent.client
+            self.timeout = parent.timeout
+            self.retries = parent.retries
+            self.unit = parent.unit
 
-        if stopbits:
-            self.stopbits = stopbits
+            if self.mode is connectionType.RTU:
+                self.device = parent.device
+                self.stopbits = parent.stopbits
+                self.parity = parent.parity
+                self.baud = parent.baud
+            elif self.mode is connectionType.TCP:
+                self.host = parent.host
+                self.port = parent.port
+            else:
+                raise NotImplementedError(self.mode)
 
-        if parity:
-            self.parity = parity
-
-        if baud:
-            self.baud = baud
-
-        self.timeout = timeout
-        self.retries = retries
-        self.unit = unit
-
-        if device:
-            self.mode = connectionType.RTU
-            self.client = ModbusSerialClient(
-                method="rtu",
-                port=self.device,
-                stopbits=self.stopbits,
-                parity=self.parity,
-                baudrate=self.baud,
-                timeout=self.timeout)
         else:
-            self.mode = connectionType.TCP
-            self.client = ModbusTcpClient(
-                host=self.host,
-                port=self.port,
-                timeout=self.timeout
-            )
+            self.host = host
+            self.port = port
+            self.device = device
+
+            if stopbits:
+                self.stopbits = stopbits
+
+            if parity:
+                self.parity = parity
+
+            if baud:
+                self.baud = baud
+
+            self.timeout = timeout
+            self.retries = retries
+            self.unit = unit
+
+            if device:
+                self.mode = connectionType.RTU
+                self.client = ModbusSerialClient(
+                    method="rtu",
+                    port=self.device,
+                    stopbits=self.stopbits,
+                    parity=self.parity,
+                    baudrate=self.baud,
+                    timeout=self.timeout)
+            else:
+                self.mode = connectionType.TCP
+                self.client = ModbusTcpClient(
+                    host=self.host,
+                    port=self.port,
+                    timeout=self.timeout
+                )
 
     def __repr__(self):
         if self.mode == connectionType.RTU:
@@ -185,6 +206,8 @@ class SolarEdge:
                 raise NotImplementedError(rtype)
         except NotImplementedError:
             raise
+        except AttributeError:
+            return False
 
     def _read_all(self, values):
         addr_min = False
@@ -251,6 +274,11 @@ class SolarEdge:
 
         return self._read_all(registers)
 
+    def meters(self):
+        meters = {k: self._read(v) for k, v in self.meter_dids.items()}
+
+        return {k: Meter(offset=k, parent=self) for k, v in meters.items() if v}
+
 
 class Inverter(SolarEdge):
 
@@ -299,4 +327,46 @@ class Inverter(SolarEdge):
             "temperature_scale": (0x9caa, 1, registerType.HOLDING, registerDataType.INT16, int, "Temperature Scale Factor", ""),
             "status": (0x9cab, 1, registerType.HOLDING, registerDataType.UINT16, int, "Status", INVERTER_STATUS_MAP),
             "vendor_status": (0x9cac, 1, registerType.HOLDING, registerDataType.UINT16, int, "Vendor Status", "")
+        }
+
+        self.meter_dids = {
+            "1": (0x9cfc, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
+            "2": (0x9daa, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
+            "3": (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
+        }
+
+
+class Meter(SolarEdge):
+    
+    def __init__(self, offset=False, *args, **kwargs):
+        self.offset = offset
+        self.model = f"Meter{offset}"
+
+        super().__init__(*args, **kwargs)
+
+        self.registers = {
+            "1": {
+                "c_model": (0x9ccb, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_option": (0x9cdb, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_version": (0x9ce3, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_serialnumber": (0x9ceb, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_deviceaddress": (0x9cfb, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
+                "c_sunspec_did": (0x9cfc, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
+            },
+            "2": {
+                "c_model": (0x9d79, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_option": (0x9d89, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_version": (0x9d91, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_serialnumber": (0x9d99, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_deviceaddress": (0x9da9, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
+                "c_sunspec_did": (0x9daa, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
+            },
+            "3": {
+                "c_model": (0x9e29, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_option": (0x9e38, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_version": (0x9e40, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_serialnumber": (0x9e48, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
+                "c_deviceaddress": (0x9e58, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
+                "c_sunspec_did": (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
+            }
         }
