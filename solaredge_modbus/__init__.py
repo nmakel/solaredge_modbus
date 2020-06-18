@@ -18,6 +18,10 @@ class sunspecDID(enum.Enum):
     THREE_PHASE_INVERTER = 103
     SINGLE_PHASE_METER = 104
     THREE_PHASE_METER = 105
+    SINGLE_PHASE_METER_2 = 201
+    THREE_PHASE_METER_2 = 202
+    WYE_THREE_PHASE_METER = 203
+    DELTA_THREE_PHASE_METER = 204
 
 
 class inverterStatus(enum.Enum):
@@ -76,7 +80,11 @@ C_SUNSPEC_DID_MAP = {
     "102": "Split Phase Inverter",
     "103": "Three Phase Inverter",
     "104": "Single Phase Meter",
-    "105": "Three Phase Meter"
+    "105": "Three Phase Meter",
+    "201": "Single Phase Meter",
+    "202": "Split Phase Meter",
+    "203": "3P1N Three Phase Meter",
+    "204": "3P Three Phase Meter"
 }
 
 INVERTER_STATUS_MAP = [
