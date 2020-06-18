@@ -345,7 +345,7 @@ class Inverter(SolarEdge):
 
 
 class Meter(SolarEdge):
-    
+
     def __init__(self, offset=False, *args, **kwargs):
         self.offset = offset
         self.model = f"Meter{offset}"
@@ -354,28 +354,110 @@ class Meter(SolarEdge):
 
         self.registers_map = {
             "1": {
-                "c_model": (0x9ccb, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_option": (0x9cdb, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_version": (0x9ce3, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_serialnumber": (0x9ceb, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_deviceaddress": (0x9cfb, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
-                "c_sunspec_did": (0x9cfc, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
+                "c_model": (0x9ccb, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", ""),
+                "c_option": (0x9cdb, 8, registerType.HOLDING, registerDataType.STRING, str, "Configuration", ""),
+                "c_version": (0x9ce3, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", ""),
+                "c_serialnumber": (0x9ceb, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", ""),
+                "c_deviceaddress": (0x9cfb, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", ""),
+                "c_sunspec_did": (0x9cfc, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", C_SUNSPEC_DID_MAP),
+
+                "current": (0x9cfe, 1, registerType.HOLDING, registerDataType.INT16, int, "Current", "A"),
+                "p1_current": (0x9cff, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Current", "A"),
+                "p2_current": (0x9d00, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Current", "A"),
+                "p3_current": (0x9d01, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Current", "A"),
+                "current_scale": (0x9d02, 1, registerType.HOLDING, registerDataType.INT16, int, "Current Scale Factor", ""),
+
+                "voltage_ln": (0x9d03, 1, registerType.HOLDING, registerDataType.INT16, int, "Voltage", "V"),
+                "p1n_voltage": (0x9d04, 1, registerType.HOLDING, registerDataType.INT16, int, "P1-N Voltage", "V"),
+                "p2n_voltage": (0x9d05, 1, registerType.HOLDING, registerDataType.INT16, int, "P2-N Voltage", "V"),
+                "p3n_voltage": (0x9d06, 1, registerType.HOLDING, registerDataType.INT16, int, "P3-N Voltage", "V"),
+
+                "voltage_ll": (0x9d07, 1, registerType.HOLDING, registerDataType.INT16, int, "Voltage Line to Line", "V"),
+                "p12_voltage": (0x9d08, 1, registerType.HOLDING, registerDataType.INT16, int, "P1-P2 Voltage", "V"),
+                "p23_voltage": (0x9d09, 1, registerType.HOLDING, registerDataType.INT16, int, "P2-P3 Voltage", "V"),
+                "p31_voltage": (0x9d0a, 1, registerType.HOLDING, registerDataType.INT16, int, "P3-P1 Voltage", "V"),
+                "voltage_scale": (0x9d0b, 1, registerType.HOLDING, registerDataType.INT16, int, "Voltage Scale Factor", ""),
+
+                "frequency": (0x9d0c, 1, registerType.HOLDING, registerDataType.INT16, int, "Frequency", "Hz"),
+                "frequency_scale": (0x9d0d, 1, registerType.HOLDING, registerDataType.INT16, int, "Frequency Scale Factor", ""),
+
+                "power": (0x9d0e, 1, registerType.HOLDING, registerDataType.INT16, int, "Power", "W"),
+                "p1_power": (0x9d0f, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power", "W"),
+                "p2_power": (0x9d10, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power", "W"),
+                "p3_power": (0x9d11, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power", "W"),
+                "power_scale": (0x9d12, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Scale Factor", ""),
+
+                "power_apparent": (0x9d13, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent)", "VA"),
+                "p1_power_apparent": (0x9d14, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power (Apparent)", "VA"),
+                "p2_power_apparent": (0x9d15, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power (Apparent)", "VA"),
+                "p3_power_apparent": (0x9d16, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power (Apparent)", "VA"),
+                "power_apparent_scale": (0x9d17, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent) Scale Factor", ""),
+
+                "power_reactive": (0x9d18, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive)", "VA"),
+                "p1_power_reactive": (0x9d19, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power (Reactive)", "VA"),
+                "p2_power_reactive": (0x9d1a, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power (Reactive)", "VA"),
+                "p3_power_reactive": (0x9d1b, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power (Reactive)", "VA"),
+                "power_reactive_scale": (0x9d1c, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive) Scale Factor", ""),
+
+                "power_factor": (0x9d1d, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor", ""),
+                "p1_power_factor": (0x9d1e, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power Factor", ""),
+                "p2_power_factor": (0x9d1f, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power Factor", ""),
+                "p3_power_factor": (0x9d20, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power Factor", ""),
+                "power_factor_scale": (0x9d21, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor Scale Factor", ""),
+
+                "export_energy_active": (0x9d22, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Exported Energy (Active)", "Wh"),
+                "p1_export_energy_active": (0x9d24, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Active)", "Wh"),
+                "p2_export_energy_active": (0x9d26, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Exported Energy (Active)", "Wh"),
+                "p3_export_energy_active": (0x9d28, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Active)", "Wh"),
+                "import_energy_active": (0x9d2a, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Imported Energy (Active)", "Wh"),
+                "p1_import_energy_active": (0x9d2c, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Imported Energy (Active)", "Wh"),
+                "p2_import_energy_active": (0x9d2e, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Imported Energy (Active)", "Wh"),
+                "p3_import_energy_active": (0x9d30, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Imported Energy (Active)", "Wh"),
+                "energy_active_scale": (0x9d32, 1, registerType.HOLDING, registerDataType.INT16, int, "Energy (Active) Scale Factor", ""),
+
+                "export_energy_apparent": (0x9d33, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Exported Energy (Apparent)", "VAh"),
+                "p1_export_energy_apparent": (0x9d35, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Apparent)", "VAh"),
+                "p2_export_energy_apparent": (0x9d37, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Exported Energy (Apparent)", "VAh"),
+                "p3_export_energy_apparent": (0x9d39, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Apparent)", "VAh"),
+                "import_energy_apparent": (0x9d3b, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Imported Energy (Apparent)", "VAh"),
+                "p1_import_energy_apparent": (0x9d3d, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Imported Energy (Apparent)", "VAh"),
+                "p2_import_energy_apparent": (0x9d3f, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Imported Energy (Apparent)", "VAh"),
+                "p3_import_energy_apparent": (0x9d41, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Imported Energy (Apparent)", "VAh"),
+                "energy_apparent_scale": (0x9d43, 1, registerType.HOLDING, registerDataType.INT16, int, "Energy (Apparent) Scale Factor", ""),
+
+                "import_energy_reactive_q1": (0x9d44, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Imported Energy (Reactive) Quadrant 1", "VARh"),
+                "p1_import_energy_reactive_q1": (0x9d46, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Imported Energy (Reactive) Quadrant 1", "VARh"),
+                "p2_import_energy_reactive_q1": (0x9d48, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Imported Energy (Reactive) Quadrant 1", "VARh"),
+                "p3_import_energy_reactive_q1": (0x9d4a, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Imported Energy (Reactive) Quadrant 1", "VARh"),
+                "import_energy_reactive_q2": (0x9d4c, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Imported Energy (Reactive) Quadrant 2", "VARh"),
+                "p1_import_energy_reactive_q2": (0x9d4e, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Imported Energy (Reactive) Quadrant 2", "VARh"),
+                "p2_import_energy_reactive_q2": (0x9d50, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Imported Energy (Reactive) Quadrant 2", "VARh"),
+                "p3_import_energy_reactive_q2": (0x9d52, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Imported Energy (Reactive) Quadrant 2", "VARh"),
+                "export_energy_reactive_q3": (0x9d54, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Exported Energy (Reactive) Quadrant 3", "VARh"),
+                "p1_export_energy_reactive_q3": (0x9d56, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Reactive) Quadrant 3", "VARh"),
+                "p2_export_energy_reactive_q3": (0x9d58, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Exported Energy (Reactive) Quadrant 3", "VARh"),
+                "p3_export_energy_reactive_q3": (0x9d5a, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Reactive) Quadrant 3", "VARh"),
+                "export_energy_reactive_q4": (0x9d5c, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Exported Energy (Reactive) Quadrant 4", "VARh"),
+                "p1_export_energy_reactive_q4": (0x9d5e, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Reactive) Quadrant 4", "VARh"),
+                "p2_export_energy_reactive_q4": (0x9d60, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Exported Energy (Reactive) Quadrant 4", "VARh"),
+                "p3_export_energy_reactive_q4": (0x9d62, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Reactive) Quadrant 4", "VARh"),
+                "energy_reactive_scale": (0x9d64, 1, registerType.HOLDING, registerDataType.INT16, int, "Energy (Reactive) Scale Factor", "")
             },
             "2": {
-                "c_model": (0x9d79, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_option": (0x9d89, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_version": (0x9d91, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_serialnumber": (0x9d99, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_deviceaddress": (0x9da9, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
-                "c_sunspec_did": (0x9daa, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
+                "c_model": (0x9d79, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", ""),
+                "c_option": (0x9d89, 8, registerType.HOLDING, registerDataType.STRING, str, "Configuration", ""),
+                "c_version": (0x9d91, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", ""),
+                "c_serialnumber": (0x9d99, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", ""),
+                "c_deviceaddress": (0x9da9, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", ""),
+                "c_sunspec_did": (0x9daa, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", C_SUNSPEC_DID_MAP)
             },
             "3": {
-                "c_model": (0x9e29, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_option": (0x9e38, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_version": (0x9e40, 8, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_serialnumber": (0x9e48, 16, registerType.HOLDING, registerDataType.STRING, str, "", ""),
-                "c_deviceaddress": (0x9e58, 1, registerType.HOLDING, registerDataType.UINT16, int, "", ""),
-                "c_sunspec_did": (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "")
+                "c_model": (0x9e29, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", ""),
+                "c_option": (0x9e38, 8, registerType.HOLDING, registerDataType.STRING, str, "Configuration", ""),
+                "c_version": (0x9e40, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", ""),
+                "c_serialnumber": (0x9e48, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", ""),
+                "c_deviceaddress": (0x9e58, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", ""),
+                "c_sunspec_did": (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", C_SUNSPEC_DID_MAP)
             }
         }
         self.registers = self.registers_map[str(self.offset)]
