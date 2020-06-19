@@ -223,7 +223,7 @@ class SolarEdge:
         except AttributeError:
             return False
 
-    def _read_all(self, values):
+    def _read_all(self, values, rtype):
         addr_min = False
         addr_max = False
         addr_type = False
@@ -231,14 +231,11 @@ class SolarEdge:
         for k, v in values.items():
             v_addr = v[0]
             v_length = v[1]
-            v_type = v[2]
 
             if not addr_min:
                 addr_min = v_addr
             if not addr_max:
                 addr_max = v_addr
-            if not addr_type:
-                addr_type = v_type
 
             if v_addr < addr_min:
                 addr_min = v_addr
