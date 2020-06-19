@@ -49,14 +49,19 @@ class registerDataType(enum.Enum):
     BITS = 1
     UINT8 = 2
     UINT16 = 3
+    ACC16 = 3
     UINT32 = 4
+    ACC32 = 4
     UINT64 = 5
+    ACC64 = 5
     INT8 = 6
     INT16 = 7
+    SCALE = 7
     INT32 = 8
     INT64 = 9
     FLOAT16 = 10
     FLOAT32 = 11
+    FLOAT = 11
     STRING = 12
 
 
@@ -315,7 +320,7 @@ class Inverter(SolarEdge):
             "p1_current": (0x9c88, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1 Current", "A", 2),
             "p2_current": (0x9c89, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2 Current", "A", 2),
             "p3_current": (0x9c8a, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3 Current", "A", 2),
-            "current_scale": (0x9c8b, 1, registerType.HOLDING, registerDataType.INT16, int, "Current Scale Factor", "", 2),
+            "current_scale": (0x9c8b, 1, registerType.HOLDING, registerDataType.SCALE, int, "Current Scale Factor", "", 2),
 
             "p1_voltage": (0x9c8c, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1 Voltage", "V", 2),
             "p2_voltage": (0x9c8d, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2 Voltage", "V", 2),
@@ -323,35 +328,35 @@ class Inverter(SolarEdge):
             "p1n_voltage": (0x9c8f, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1-N Voltage", "V", 2),
             "p2n_voltage": (0x9c90, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2-N Voltage", "V", 2),
             "p3n_voltage": (0x9c91, 1, registerType.HOLDING, registerDataType.UINT16, int, "P3-N Voltage", "V", 2),
-            "voltage_scale": (0x9c92, 1, registerType.HOLDING, registerDataType.INT16, int, "Voltage Scale Factor", "", 2),
+            "voltage_scale": (0x9c92, 1, registerType.HOLDING, registerDataType.SCALE, int, "Voltage Scale Factor", "", 2),
 
             "power_ac": (0x9c93, 1, registerType.HOLDING, registerDataType.INT16, int, "Power", "W", 2),
-            "power_ac_scale": (0x9c94, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Scale Factor", "", 2),
+            "power_ac_scale": (0x9c94, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power Scale Factor", "", 2),
 
             "frequency": (0x9c95, 1, registerType.HOLDING, registerDataType.UINT16, int, "Frequency", "Hz", 2),
-            "frequency_scale": (0x9c96, 1, registerType.HOLDING, registerDataType.INT16, int, "Frequency Scale Factor", "", 2),
+            "frequency_scale": (0x9c96, 1, registerType.HOLDING, registerDataType.SCALE, int, "Frequency Scale Factor", "", 2),
 
             "power_apparent": (0x9c97, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent)", "VA", 2),
-            "power_apparent_scale": (0x9c98, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent) Scale Factor", "", 2),
+            "power_apparent_scale": (0x9c98, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power (Apparent) Scale Factor", "", 2),
             "power_reactive": (0x9c99, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive)", "VA", 2),
-            "power_reactive_scale": (0x9c9a, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive) Scale Factor", "", 2),
+            "power_reactive_scale": (0x9c9a, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power (Reactive) Scale Factor", "", 2),
             "power_factor": (0x9c9b, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor", "%", 2),
-            "power_factor_scale": (0x9c9c, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor Scale Factor", "", 2),
+            "power_factor_scale": (0x9c9c, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power Factor Scale Factor", "", 2),
 
-            "energy_total": (0x9c9d, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Energy", "Wh", 2),
-            "energy_total_scale": (0x9c9f, 1, registerType.HOLDING, registerDataType.UINT16, int, "Total Energy Scale Factor", "", 2),
+            "energy_total": (0x9c9d, 2, registerType.HOLDING, registerDataType.ACC32, int, "Total Energy", "Wh", 2),
+            "energy_total_scale": (0x9c9f, 1, registerType.HOLDING, registerDataType.SCALE, int, "Total Energy Scale Factor", "", 2),
 
             "current_dc": (0x9ca0, 1, registerType.HOLDING, registerDataType.UINT16, int, "DC Current", "A", 2),
-            "current_dc_scale": (0x9ca1, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Current Scale Factor", "", 2),
+            "current_dc_scale": (0x9ca1, 1, registerType.HOLDING, registerDataType.SCALE, int, "DC Current Scale Factor", "", 2),
 
             "voltage_dc": (0x9ca2, 1, registerType.HOLDING, registerDataType.UINT16, int, "DC Voltage", "V", 2),
-            "voltage_dc_scale": (0x9ca3, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Voltage Scale Factor", "", 2),
+            "voltage_dc_scale": (0x9ca3, 1, registerType.HOLDING, registerDataType.SCALE, int, "DC Voltage Scale Factor", "", 2),
 
             "power_dc": (0x9ca4, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Power", "W", 2),
-            "power_dc_scale": (0x9ca5, 1, registerType.HOLDING, registerDataType.INT16, int, "DC Power Scale Factor", "", 2),
+            "power_dc_scale": (0x9ca5, 1, registerType.HOLDING, registerDataType.SCALE, int, "DC Power Scale Factor", "", 2),
 
             "temperature": (0x9ca7, 1, registerType.HOLDING, registerDataType.INT16, int, "Temperature", "°C", 2),
-            "temperature_scale": (0x9caa, 1, registerType.HOLDING, registerDataType.INT16, int, "Temperature Scale Factor", "", 2),
+            "temperature_scale": (0x9caa, 1, registerType.HOLDING, registerDataType.SCALE, int, "Temperature Scale Factor", "", 2),
 
             "status": (0x9cab, 1, registerType.HOLDING, registerDataType.UINT16, int, "Status", INVERTER_STATUS_MAP, 2),
             "vendor_status": (0x9cac, 1, registerType.HOLDING, registerDataType.UINT16, int, "Vendor Status", "", 2)
@@ -384,7 +389,7 @@ class Meter(SolarEdge):
             "p1_current": (0x9cff + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Current", "A", 2),
             "p2_current": (0x9d00 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Current", "A", 2),
             "p3_current": (0x9d01 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Current", "A", 2),
-            "current_scale": (0x9d02 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Current Scale Factor", "", 2),
+            "current_scale": (0x9d02 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Current Scale Factor", "", 2),
 
             "voltage_ln": (0x9d03 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "L-N Voltage", "V", 2),
             "p1n_voltage": (0x9d04 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1-N Voltage", "V", 2),
@@ -394,34 +399,34 @@ class Meter(SolarEdge):
             "p12_voltage": (0x9d08 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1-P2 Voltage", "V", 2),
             "p23_voltage": (0x9d09 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P2-P3 Voltage", "V", 2),
             "p31_voltage": (0x9d0a + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P3-P1 Voltage", "V", 2),
-            "voltage_scale": (0x9d0b + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Voltage Scale Factor", "", 2),
+            "voltage_scale": (0x9d0b + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Voltage Scale Factor", "", 2),
 
             "frequency": (0x9d0c + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Frequency", "Hz", 2),
-            "frequency_scale": (0x9d0d + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Frequency Scale Factor", "", 2),
+            "frequency_scale": (0x9d0d + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Frequency Scale Factor", "", 2),
 
             "power": (0x9d0e + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power", "W", 2),
             "p1_power": (0x9d0f + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power", "W", 2),
             "p2_power": (0x9d10 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power", "W", 2),
             "p3_power": (0x9d11 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power", "W", 2),
-            "power_scale": (0x9d12 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Scale Factor", "", 2),
+            "power_scale": (0x9d12 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power Scale Factor", "", 2),
 
             "power_apparent": (0x9d13 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent)", "VA", 2),
             "p1_power_apparent": (0x9d14 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power (Apparent)", "VA", 2),
             "p2_power_apparent": (0x9d15 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power (Apparent)", "VA", 2),
             "p3_power_apparent": (0x9d16 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power (Apparent)", "VA", 2),
-            "power_apparent_scale": (0x9d17 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Apparent) Scale Factor", "", 2),
+            "power_apparent_scale": (0x9d17 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power (Apparent) Scale Factor", "", 2),
 
             "power_reactive": (0x9d18 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive)", "VAR", 2),
             "p1_power_reactive": (0x9d19 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power (Reactive)", "VAR", 2),
             "p2_power_reactive": (0x9d1a + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power (Reactive)", "VAR", 2),
             "p3_power_reactive": (0x9d1b + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power (Reactive)", "VAR", 2),
-            "power_reactive_scale": (0x9d1c + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power (Reactive) Scale Factor", "", 2),
+            "power_reactive_scale": (0x9d1c + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power (Reactive) Scale Factor", "", 2),
 
             "power_factor": (0x9d1d + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor", "", 2),
             "p1_power_factor": (0x9d1e + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Power Factor", "", 2),
             "p2_power_factor": (0x9d1f + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P2 Power Factor", "", 2),
             "p3_power_factor": (0x9d20 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P3 Power Factor", "", 2),
-            "power_factor_scale": (0x9d21 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Power Factor Scale Factor", "", 2),
+            "power_factor_scale": (0x9d21 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power Factor Scale Factor", "", 2),
 
             "export_energy_active": (0x9d22 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Exported Energy (Active)", "Wh", 2),
             "p1_export_energy_active": (0x9d24 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Active)", "Wh", 2),
@@ -431,7 +436,7 @@ class Meter(SolarEdge):
             "p1_import_energy_active": (0x9d2c + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Imported Energy (Active)", "Wh", 2),
             "p2_import_energy_active": (0x9d2e + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Imported Energy (Active)", "Wh", 2),
             "p3_import_energy_active": (0x9d30 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Imported Energy (Active)", "Wh", 2),
-            "energy_active_scale": (0x9d32 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Energy (Active) Scale Factor", "", 2),
+            "energy_active_scale": (0x9d32 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Active) Scale Factor", "", 2),
 
             "export_energy_apparent": (0x9d33 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Exported Energy (Apparent)", "VAh", 3),
             "p1_export_energy_apparent": (0x9d35 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Apparent)", "VAh", 3),
@@ -441,7 +446,7 @@ class Meter(SolarEdge):
             "p1_import_energy_apparent": (0x9d3d + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Imported Energy (Apparent)", "VAh", 3),
             "p2_import_energy_apparent": (0x9d3f + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Imported Energy (Apparent)", "VAh", 3),
             "p3_import_energy_apparent": (0x9d41 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Imported Energy (Apparent)", "VAh", 3),
-            "energy_apparent_scale": (0x9d43 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Energy (Apparent) Scale Factor", "", 3),
+            "energy_apparent_scale": (0x9d43 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Apparent) Scale Factor", "", 3),
 
             "import_energy_reactive_q1": (0x9d44 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "Total Imported Energy (Reactive) Quadrant 1", "VARh", 3),
             "p1_import_energy_reactive_q1": (0x9d46 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Imported Energy (Reactive) Quadrant 1", "VARh", 3),
@@ -459,5 +464,5 @@ class Meter(SolarEdge):
             "p1_export_energy_reactive_q4": (0x9d5e + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Reactive) Quadrant 4", "VARh", 3),
             "p2_export_energy_reactive_q4": (0x9d60 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Exported Energy (Reactive) Quadrant 4", "VARh", 3),
             "p3_export_energy_reactive_q4": (0x9d62 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Reactive) Quadrant 4", "VARh", 3),
-            "energy_reactive_scale": (0x9d64 + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Energy (Reactive) Scale Factor", "", 3)
+            "energy_reactive_scale": (0x9d64 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Reactive) Scale Factor", "", 3)
         }
