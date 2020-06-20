@@ -297,9 +297,9 @@ class SolarEdge:
         return results
 
     def meters(self):
-        meters = {k: self._read(v) for k, v in self.meter_dids.items()}
+        meters = [self._read(v) for v in self.meter_dids]
 
-        return {f"Meter{k}": Meter(offset=int(k), parent=self) for k, v in meters.items() if v}
+        return {f"Meter{idx + 1}": Meter(offset=idx, parent=self) for idx, v in enumerate(meters) if v}
 
 
 class Inverter(SolarEdge):
@@ -362,21 +362,21 @@ class Inverter(SolarEdge):
             "vendor_status": (0x9cac, 1, registerType.HOLDING, registerDataType.UINT16, int, "Vendor Status", "", 2)
         }
 
-        self.meter_dids = {
-            "1": (0x9cfc, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
-            "2": (0x9daa, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
-            "3": (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
-        }
+        self.meter_dids = [
+            (0x9cfc, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
+            (0x9daa, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
+            (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
+        ]
 
 
 class Meter(SolarEdge):
 
     def __init__(self, offset=False, *args, **kwargs):
-        self.model = f"Meter{offset}"
+        self.model = f"Meter{offset + 1}"
 
         super().__init__(*args, **kwargs)
 
-        self.offset = METER_REGISTER_OFFSETS[int(offset) - 1]
+        self.offset = METER_REGISTER_OFFSETS[offset]
         self.registers = {
             "c_model": (0x9ccb + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", "", 1),
             "c_option": (0x9cdb + self.offset, 8, registerType.HOLDING, registerDataType.STRING, str, "Mode", "", 1),
