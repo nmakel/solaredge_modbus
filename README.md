@@ -219,13 +219,11 @@ SolarEdge supports various kWh meters and exposes their registers through a set 
         'Meter1': Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
     }
 
-    >>> m1 = inverter.meters()["Meter1"]
-    >>> m1
-
+    >>> meter1 = inverter.meters()["Meter1"]
+    >>> meter1
     Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
 
-    >>> m1.read_all()
-
+    >>> meter1.read_all()
     {
         'c_model': 'PRO380-Mod',
         'c_option': 'Export+Import',
