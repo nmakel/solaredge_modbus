@@ -291,7 +291,7 @@ class SolarEdge:
 
             if not register_batch:
                 break
-            
+
             results.update(self._read_all(register_batch, rtype))
 
         return results
