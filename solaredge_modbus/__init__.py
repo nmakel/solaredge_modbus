@@ -180,9 +180,9 @@ class SolarEdge:
 
     def __repr__(self):
         if self.mode == connectionType.RTU:
-            return f"{self.model}({self.device}, {self.mode}: stopbits={self.stopbits}, parity={self.parity}, baud={self.baud}, timeout={self.timeout}, unit={hex(self.unit)})"
+            return f"{self.model}({self.device}, {self.mode}: stopbits={self.stopbits}, parity={self.parity}, baud={self.baud}, timeout={self.timeout}, retries={self.retries}, unit={hex(self.unit)})"
         elif self.mode == connectionType.TCP:
-            return f"{self.model}({self.host}:{self.port}, {self.mode}: timeout={self.timeout}, unit={hex(self.unit)})"
+            return f"{self.model}({self.host}:{self.port}, {self.mode}: timeout={self.timeout}, retries={self.retries}, unit={hex(self.unit)})"
         else:
             return f"<{self.__class__.__module__}.{self.__class__.__name__} object at {hex(id(self))}>"
 
@@ -191,6 +191,9 @@ class SolarEdge:
             result = self.client.read_holding_registers(address=address, count=length, unit=self.unit)
 
             if isinstance(result, ReadHoldingRegistersResponse):
+                if len(result.registers) != length:
+                    continue
+
                 return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
 
         return None
