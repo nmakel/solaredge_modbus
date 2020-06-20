@@ -231,7 +231,6 @@ class SolarEdge:
     def _read_all(self, values, rtype):
         addr_min = False
         addr_max = False
-        addr_type = False
 
         for k, v in values.items():
             v_addr = v[0]
@@ -269,7 +268,6 @@ class SolarEdge:
 
                 results[k] = self._decode_value(data, length, dtype, vtype)
                 offset += length
-
         except NotImplementedError:
             raise
 
