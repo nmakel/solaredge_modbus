@@ -219,7 +219,9 @@ class SolarEdge:
         address, length, rtype, dtype, vtype, label, fmt, batch = value
 
         try:
-            if rtype == registerType.HOLDING:
+            if rtype == registerType.INPUT:
+                return self._decode_value(self._read_input_registers(address, length), length, dtype, vtype)
+            elif rtype == registerType.HOLDING:
                 return self._decode_value(self._read_holding_registers(address, length), length, dtype, vtype)
             else:
                 raise NotImplementedError(rtype)
