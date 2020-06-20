@@ -33,7 +33,7 @@ optional arguments:
 Output:
 
 ```
-Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1):
+Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1):
 
 Registers:
     Model: SE3500H-RW000BNN4
@@ -138,7 +138,7 @@ Printing the class yields basic device parameters:
 
 ```
     >>> inverter
-    Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1)
+    Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
 ```
 
 Reading a single input register by name:
@@ -216,13 +216,13 @@ SolarEdge supports various kWh meters and exposes their registers through a set 
 ```
     >>> inverter.meters()
     {
-        'Meter1': Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1)
+        'Meter1': Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
     }
 
     >>> m1 = inverter.meters()["Meter1"]
     >>> m1
 
-    Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1)
+    Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
 
     >>> m1.read_all()
 
