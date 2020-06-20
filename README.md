@@ -37,17 +37,17 @@ Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1):
 
 Registers:
     Model: SE3500H-RW000BNN4
-    Type: Single Phase
+    Type: Single Phase Inverter
     Version: 0004.0009.0030
     Serial: 123ABC12
     Status: Producing
     Temperature: 49.79°C
     Current: 8.93A
     Voltage: 240.20V
-    Power: 2141.80W
     Frequency: 50.00Hz
+    Power: 2141.80W
     Power (Apparent): 2149.60VA
-    Power (Reactive): 183.20VA
+    Power (Reactive): 183.20VAr
     Power Factor: 99.69%
     Total Energy: 3466757Wh
     DC Current: 5.68A
@@ -76,10 +76,10 @@ Passing `--json` returns:
     'p2n_voltage': False,
     'p3n_voltage': False,
     'voltage_scale': -1,
-    'power_ac': 21413,
-    'power_ac_scale': -1, 
     'frequency': 50003,
     'frequency_scale': -3,
+    'power_ac': 21413,
+    'power_ac_scale': -1, 
     'power_apparent': 21479,
     'power_apparent_scale': -1,
     'power_reactive': 16859,
@@ -201,13 +201,44 @@ If you need more information about a particular register, to look up the units o
 
 ```
     >>> inverter.registers["current"]
-        # address, length, type, datatype, valuetype, name, unit
-        (40071, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Current', 'A')
+        # address, length, type, datatype, valuetype, name, unit, batching
+        (40071, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Current', 'A', 2)
 
     >>> inverter.registers["status"]
-        # address, length, type, datatype, valuetype, name, unit
-        (40107, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Status', ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'])
+        # address, length, type, datatype, valuetype, name, unit, batching
+        (40107, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Status', ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'], 2)
 ```
+
+## Meters
+
+SolarEdge supports various kWh meters and exposes their registers through a set of pre-defined registers on the inverter. The number of supported registers is hard-coded, per the SolarEdge SunSpec implementation, to three. It is possible to query the meter registers:
+
+```
+    >>> inverter.meters()
+    {
+        'Meter1': Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1)
+    }
+
+    >>> m1 = inverter.meters()["Meter1"]
+    >>> m1
+
+    'Meter1': Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1)
+
+    >>> m1.read_all()
+
+    {
+        'c_model': 'PRO380-Mod',
+        'c_option': 'Export+Import',
+        'c_version': '2.19',
+        'c_serialnumber': '12312332',
+        'c_deviceaddress': 1,
+        'c_sunspec_did': 203,
+        'current': -13,
+        ...
+    }
+```
+
+**Note:** as I do not have access to a compatible kWh meter, the meter implementation is not thoroughly tested. If you have issues with this functionality, please open a GitHub issue.
 
 ## Contributing
 
