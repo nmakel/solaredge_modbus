@@ -237,14 +237,14 @@ class SolarEdge:
             v_addr = v[0]
             v_length = v[1]
 
-            if not addr_min:
+            if addr_min is False:
                 addr_min = v_addr
-            if not addr_max:
-                addr_max = v_addr
+            if addr_max is False:
+                addr_max = v_addr + v_length
 
             if v_addr < addr_min:
                 addr_min = v_addr
-            if v_addr > addr_max:
+            if (v_addr + v_length) > addr_max:
                 addr_max = v_addr + v_length
 
         results = {}
