@@ -209,7 +209,7 @@ If you need more information about a particular register, to look up the units o
         (40107, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Status', ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'], 2)
 ```
 
-## Meters
+### Meters
 
 SolarEdge supports various kWh meters and exposes their registers through a set of pre-defined registers on the inverter. The number of supported registers is hard-coded, per the SolarEdge SunSpec implementation, to three. It is possible to query the meter registers:
 
@@ -222,7 +222,7 @@ SolarEdge supports various kWh meters and exposes their registers through a set 
     >>> m1 = inverter.meters()["Meter1"]
     >>> m1
 
-    'Meter1': Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1)
+    Meter1(10.0.0.123:1502, connectionType.TCP: timeout=1, unit=0x1)
 
     >>> m1.read_all()
 
