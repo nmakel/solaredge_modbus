@@ -332,7 +332,7 @@ class Inverter(SolarEdge):
 
             "power_ac": (0x9c93, 1, registerType.HOLDING, registerDataType.INT16, int, "Power", "W", 2),
             "power_ac_scale": (0x9c94, 1, registerType.HOLDING, registerDataType.SCALE, int, "Power Scale Factor", "", 2),
-
+            
             "frequency": (0x9c95, 1, registerType.HOLDING, registerDataType.UINT16, int, "Frequency", "Hz", 2),
             "frequency_scale": (0x9c96, 1, registerType.HOLDING, registerDataType.SCALE, int, "Frequency Scale Factor", "", 2),
 
