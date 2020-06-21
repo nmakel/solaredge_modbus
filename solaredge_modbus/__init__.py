@@ -190,11 +190,12 @@ class SolarEdge:
         for i in range(self.retries):
             result = self.client.read_holding_registers(address=address, count=length, unit=self.unit)
 
-            if isinstance(result, ReadHoldingRegistersResponse):
-                if len(result.registers) != length:
-                    continue
+            if not isinstance(result, ReadHoldingRegistersResponse):
+                continue
+            if len(result.registers) != length:
+                continue
 
-                return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
 
         return None
 
@@ -262,6 +263,9 @@ class SolarEdge:
                 data = self._read_holding_registers(offset, length)
             else:
                 raise NotImplementedError(rtype)
+
+            if not data:
+                return results
 
             for k, v in values.items():
                 address, length, rtype, dtype, vtype, label, fmt, batch = v
