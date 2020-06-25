@@ -305,11 +305,6 @@ class SolarEdge:
 
         return results
 
-    def meters(self):
-        meters = [self._read(v) for v in self.meter_dids]
-
-        return {f"Meter{idx + 1}": Meter(offset=idx, parent=self) for idx, v in enumerate(meters) if v}
-
 
 class Inverter(SolarEdge):
 
@@ -376,6 +371,11 @@ class Inverter(SolarEdge):
             (0x9daa, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
             (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
         ]
+
+    def meters(self):
+        meters = [self._read(v) for v in self.meter_dids]
+
+        return {f"Meter{idx + 1}": Meter(offset=idx, parent=self) for idx, v in enumerate(meters) if v}
 
 
 class Meter(SolarEdge):
