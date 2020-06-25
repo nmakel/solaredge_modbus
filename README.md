@@ -236,6 +236,18 @@ SolarEdge supports various kWh meters and exposes their registers through a set 
     }
 ```
 
+Calling `meters()` on an inverter object is the recommended way of instantiating meter objects. This way, checking for available meters, register offsetting, and sharing of the pymodbus connection is taken care of. If you want to to create a meter object independently, do the following:
+
+```
+    # Meter #1 via the existing inverter connection
+    >>> meter1 = solaredge_modbus.Meter(parent=inverter, offset=0)
+
+    # Meter #2 over ModbusTCP, without a parent connection
+    >>> meter2 = solaredge_modbus.Meter(host="10.0.0.123", port=1502, offset=1)
+```
+
+There are two points to consider when doing this. You will need to manually pass the `parent` and `offset` parameters, which take care of sharing an existing Modbus connection, and set the correct register addresses. Use `offset` 0 for the first meter, 1 for the second, and 2 for the third. If you do not pass a parent inverter object, you will need to supply connection parameters just like those required by the inverter object. Remember that a second ModbusTCP or Modbus RTU connection will fail when already in use by another inverter or meter object.
+
 **Note:** as I do not have access to a compatible kWh meter, the meter implementation is not thoroughly tested. If you have issues with this functionality, please open a GitHub issue.
 
 ## Contributing
