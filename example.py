@@ -22,6 +22,13 @@ if __name__ == "__main__":
     )
 
     values = inverter.read_all()
+    meters = inverter.meters()
+    values["meters"] = {}
+
+    # show meters
+    for meter,params in meters.items():
+        meterValues = params.read_all()
+        values["meters"][meter] = meterValues
 
     if args.json:
         print(json.dumps(values, indent=4))
@@ -61,3 +68,6 @@ if __name__ == "__main__":
         print(f"\tDC Current: {(values['current_dc'] * (10 ** values['current_dc_scale'])):.2f}{inverter.registers['current_dc'][6]}")
         print(f"\tDC Voltage: {(values['voltage_dc'] * (10 ** values['voltage_dc_scale'])):.2f}{inverter.registers['voltage_dc'][6]}")
         print(f"\tDC Power: {(values['power_dc'] * (10 ** values['power_dc_scale'])):.2f}{inverter.registers['power_dc'][6]}")
+
+
+               
