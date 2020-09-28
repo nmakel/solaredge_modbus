@@ -14,7 +14,7 @@ or install the package from PyPi:
 
 ## Usage
 
-The script `write_influx.py` of writing data to influx db given by connection params
+The script `write_influx.py` writes data to influx db as given by connection params
 
 usage: write_influx.py 123.123.123.123 502 --influx_host=localhost
 
