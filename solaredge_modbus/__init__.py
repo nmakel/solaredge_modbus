@@ -75,9 +75,8 @@ SUNSPEC_NOTIMPLEMENTED = {
     "INT16": 0x8000,
     "SCALE": 0x8000,
     "INT32": 0x80000000,
-    "INT64": 0x8000000000000000,
-    "FLOAT": 0x7fc00000,
-    "STRING": "\x00"
+    "FLOAT32": 0xffffffff,
+    "STRING": ""
 }
 
 C_SUNSPEC_DID_MAP = {
@@ -110,6 +109,10 @@ METER_REGISTER_OFFSETS = [
     0x15c
 ]
 
+BATTERY_REGISTER_OFFSETS = [
+    0x0,
+    0x64
+]
 
 class SolarEdge:
 
@@ -195,7 +198,7 @@ class SolarEdge:
             if len(result.registers) != length:
                 continue
 
-            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=Endian.Little)
 
         return None
 
@@ -205,8 +208,12 @@ class SolarEdge:
                 decoded = data.decode_16bit_uint()
             elif dtype == registerDataType.UINT32:
                 decoded = data.decode_32bit_uint()
+            elif dtype == registerDataType.UINT64:
+                decoded = data.decode_64bit_uint()
             elif dtype == registerDataType.INT16:
                 decoded = data.decode_16bit_int()
+            elif dtype == registerDataType.FLOAT32:
+                decoded = data.decode_32bit_float()
             elif dtype == registerDataType.STRING:
                 decoded = data.decode_string(length * 2).decode("utf-8").replace("\x00", "")
             else:
@@ -296,6 +303,7 @@ class SolarEdge:
         results = {}
 
         for batch in range(1, len(registers)):
+            # only use registers asigned for batch readout
             register_batch = {k: v for k, v in registers.items() if (v[7] == batch)}
 
             if not register_batch:
@@ -372,10 +380,20 @@ class Inverter(SolarEdge):
             (0x9e59, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
         ]
 
+        self.battery_dids = [
+            (0xE140, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
+            (0xE240, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
+        ]
+
     def meters(self):
         meters = [self._read(v) for v in self.meter_dids]
 
         return {f"Meter{idx + 1}": Meter(offset=idx, parent=self) for idx, v in enumerate(meters) if v}
+
+    def batteries(self):
+        batteries = [self._read(v) for v in self.battery_dids]
+
+        return {f"Battery{idx + 1}": Battery(offset=idx, parent=self) for idx, v in enumerate(batteries) if v != 255}
 
 
 class Meter(SolarEdge):
@@ -474,4 +492,40 @@ class Meter(SolarEdge):
             "p2_export_energy_reactive_q4": (0x9d60 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
             "p3_export_energy_reactive_q4": (0x9d62 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
             "energy_reactive_scale": (0x9d64 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Reactive) Scale Factor", "", 3)
+        }
+
+class Battery(SolarEdge):
+
+    def __init__(self, offset=False, *args, **kwargs):
+        self.model = f"Battery{offset + 1}"
+
+        super().__init__(*args, **kwargs)
+
+        self.offset = BATTERY_REGISTER_OFFSETS[offset]
+        self.registers = {
+            "manufacturer_name": (0xe100 + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Manufacturer Name", "", 1),
+            "model": (0xe110 + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", "", 1),
+            "firmware_version": (0xe120 + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Firmware Version", "", 1),
+            "serial_number": (0xe130 + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial Number", "", 1),
+            "device_id": (0xe140 + self.offset, 1, registerType.HOLDING, registerDataType.UINT16, int, "Device ID", "", 1),
+            "rated_energy": (0xe142 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Rated Energy", "", 2),
+            "max_charge_continues_power": (0xe144 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Max Charge Continues Power", "", 2),
+            "max_discharge_continues_power": (0xe146 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Max Discharge Continues Power", "", 2),
+            "max_charge_peak_power": (0xe148 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Max Charge Peak Power", "", 2),
+            "max_discharge_peak_power": (0xe14a + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Max Discharge Peak Power", "", 2),
+            "average_temperature": (0xe16c + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Average Temperature","", 2),
+            "max_temperature": (0xe16e + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Max Temperature","", 2),
+            "instantaneous_voltage": (0xE170 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Instantaneous Voltage","", 2),
+            "instantaneous_current": (0xE172 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Instantaneous Current","", 2),
+            "instantaneous_power": (0xE174 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Instantaneous Power","", 2),
+            "lifetime_export_energy_counter": (0xE176 + self.offset, 4, registerType.HOLDING, registerDataType.UINT64, int, "Lifetime Export Energy Counter","", 2),
+            "lifetime_import_energy_counter": (0xE17A + self.offset, 4, registerType.HOLDING, registerDataType.UINT64, int, "Lifetime Import Energy Counter","", 2),
+            "max_energy": (0xE17E + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Max Energy","", 2),
+            "available_energy": (0xE180 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Available Energy","", 2),
+            "soh": (0xE182 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "State of Health (SOH)","", 2),
+            "soe": (0xE184 + self.offset, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "State of Energy (SOE)","", 2),
+            "status": (0xE186 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "Status","", 2),
+            "status_internal": (0xE188 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "Status internal","", 2),
+            "events_log": (0xE18A + self.offset, 2, registerType.HOLDING, registerDataType.UINT16, int, "Events Log","", 2),
+            "events_log_internal": (0xE192 + self.offset, 2, registerType.HOLDING, registerDataType.UINT16, int, "Events Log Internal","", 2),
         }

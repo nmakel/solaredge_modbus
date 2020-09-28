@@ -21,14 +21,22 @@ if __name__ == "__main__":
         unit=args.unit
     )
 
+    values = {}
     values = inverter.read_all()
     meters = inverter.meters()
+    batteries = inverter.batteries()
     values["meters"] = {}
+    values["batteries"] = {}
 
     # show meters
     for meter,params in meters.items():
         meterValues = params.read_all()
         values["meters"][meter] = meterValues
+
+    for battery,params in batteries.items():
+        batteryValues = params.read_all()
+
+        values["batteries"][battery] = batteryValues
 
     if args.json:
         print(json.dumps(values, indent=4))
