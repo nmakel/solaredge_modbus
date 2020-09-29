@@ -114,6 +114,7 @@ BATTERY_REGISTER_OFFSETS = [
     0x64
 ]
 
+
 class SolarEdge:
 
     model = "SolarEdge"
@@ -303,7 +304,6 @@ class SolarEdge:
         results = {}
 
         for batch in range(1, len(registers)):
-            # only use registers asigned for batch readout
             register_batch = {k: v for k, v in registers.items() if (v[7] == batch)}
 
             if not register_batch:
@@ -493,6 +493,7 @@ class Meter(SolarEdge):
             "p3_export_energy_reactive_q4": (0x9d62 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
             "energy_reactive_scale": (0x9d64 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Reactive) Scale Factor", "", 3)
         }
+
 
 class Battery(SolarEdge):
 
