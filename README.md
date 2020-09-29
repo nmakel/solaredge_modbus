@@ -101,6 +101,8 @@ Passing `--json` returns:
 }
 ```
 
+Note that if kWh meters or batteries are connected to your inverter, these will also be presented in the JSON output.
+
 ## Examples
 
 If you wish to use ModbusTCP the following parameters are relevant:
