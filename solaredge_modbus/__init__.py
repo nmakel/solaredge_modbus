@@ -75,6 +75,8 @@ SUNSPEC_NOTIMPLEMENTED = {
     "INT16": 0x8000,
     "SCALE": 0x8000,
     "INT32": 0x80000000,
+    "INT64": 0x8000000000000000,
+    "FLOAT": 0x7fc00000,
     "FLOAT32": 0xffffffff,
     "STRING": ""
 }
