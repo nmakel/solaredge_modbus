@@ -268,7 +268,7 @@ Calling `meters()` or `batteries()` on an inverter object is the recommended way
     # Battery #1 via the existing inverter connection
     >>> battery1 = solaredge_modbus.Battery(parent=inverter, offset=0)
 
-    # Meter #1 over ModbusTCP, without a parent connection
+    # Battery #1 over ModbusTCP, without a parent connection
     >>> battery1 = solaredge_modbus.Battery(host="10.0.0.123", port=1502, offset=1)
 ```
 
