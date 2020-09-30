@@ -14,10 +14,6 @@ or install the package from PyPi:
 
 ## Usage
 
-The script `write_influx.py` writes data to influx db as given by connection params
-
-usage: write_influx.py 123.123.123.123 502 --influx_host=localhost
-
 The script `example.py` provides a minimal example of connecting to and displaying all registers from a SolarEdge power inverter over ModbusTCP.
 
 ```
@@ -104,6 +100,8 @@ Passing `--json` returns:
     'vendor_status': 0
 }
 ```
+
+Note that if kWh meters or batteries are connected to your inverter, these will also be presented in the JSON output.
 
 ## Examples
 
@@ -213,9 +211,9 @@ If you need more information about a particular register, to look up the units o
         (40107, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Status', ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'], 2)
 ```
 
-### Meters
+### Meters & Batteries
 
-SolarEdge supports various kWh meters and exposes their registers through a set of pre-defined registers on the inverter. The number of supported registers is hard-coded, per the SolarEdge SunSpec implementation, to three. It is possible to query the meter registers:
+SolarEdge supports various kWh meters and batteries, and exposes their registers through a set of pre-defined registers on the inverter. The number of supported registers is hard-coded, per the SolarEdge SunSpec implementation, to three meters and two batteries. It is possible to query their registers:
 
 ```
     >>> inverter.meters()
@@ -240,7 +238,25 @@ SolarEdge supports various kWh meters and exposes their registers through a set 
     }
 ```
 
-Calling `meters()` on an inverter object is the recommended way of instantiating meter objects. This way, checking for available meters, register offsetting, and sharing of the pymodbus connection is taken care of. If you want to to create a meter object independently, do the following:
+Or similarly for batteries:
+
+```
+    >>> inverter.batteries()
+    {
+        'Battery1': Battery(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
+    }
+
+    >>> battery1 = inverter.batteries()["Battery1"]
+    >>> battery1
+    Battery1(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
+
+    >>> battery1.read_all()
+    {
+        ...
+    }
+```
+
+Calling `meters()` or `batteries()` on an inverter object is the recommended way of instantiating their objects. This way, checking for available devices, register offsetting, and sharing of the pymodbus connection is taken care of. If you want to to create a meter or battery object independently, do the following:
 
 ```
     # Meter #1 via the existing inverter connection
@@ -248,11 +264,17 @@ Calling `meters()` on an inverter object is the recommended way of instantiating
 
     # Meter #2 over ModbusTCP, without a parent connection
     >>> meter2 = solaredge_modbus.Meter(host="10.0.0.123", port=1502, offset=1)
+
+    # Battery #1 via the existing inverter connection
+    >>> battery1 = solaredge_modbus.Battery(parent=inverter, offset=0)
+
+    # Battery #1 over ModbusTCP, without a parent connection
+    >>> battery1 = solaredge_modbus.Battery(host="10.0.0.123", port=1502, offset=1)
 ```
 
-There are two points to consider when doing this. You will need to manually pass the `parent` and `offset` parameters, which take care of sharing an existing Modbus connection, and set the correct register addresses. Use `offset` 0 for the first meter, 1 for the second, and 2 for the third. If you do not pass a parent inverter object, you will need to supply connection parameters just like those required by the inverter object. Remember that a second ModbusTCP or Modbus RTU connection will fail when already in use by another inverter or meter object.
+There are two points to consider when doing this. You will need to manually pass the `parent` and `offset` parameters, which take care of sharing an existing Modbus connection, and set the correct register addresses. Use `offset` 0 for the first device, 1 for the second, and 2 for the third. If you do not pass a parent inverter object, you will need to supply connection parameters just like those required by the inverter object. Remember that a second ModbusTCP or Modbus RTU connection will fail when already in use by another inverter, meter, or battery object.
 
-**Note:** as I do not have access to a compatible kWh meter, the meter implementation is not thoroughly tested. If you have issues with this functionality, please open a GitHub issue.
+**Note:** as I do not have access to a compatible kWh meter nor battery, this implementation is not thoroughly tested. If you have issues with this functionality, please open a GitHub issue.
 
 ## Contributing
 
