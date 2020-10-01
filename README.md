@@ -103,6 +103,35 @@ Passing `--json` returns:
 
 Note that if kWh meters or batteries are connected to your inverter, these will also be presented in the JSON output.
 
+A second script, `example_influxdb.py` provides an example InfluxDB writer. It connects to an inverter over ModbusTCP, and writes inverter, battery and meter values to an InfluxDB every second.
+
+
+```
+usage: example_influxdb.py [-h] [--timeout TIMEOUT] [--unit UNIT] [--interval INTERVAL] [--influx_host INFLUX_HOST] [--influx_port INFLUX_PORT] [--influx_db INFLUX_DB]
+                           [--influx_user INFLUX_USER] [--influx_pass INFLUX_PASS]
+                           host port
+
+positional arguments:
+  host                  ModbusTCP address
+  port                  ModbusTCP port
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --timeout TIMEOUT     Connection timeout
+  --unit UNIT           Modbus unit
+  --interval INTERVAL   Update interval
+  --influx_host INFLUX_HOST
+                        InfluxDB host
+  --influx_port INFLUX_PORT
+                        InfluxDB port
+  --influx_db INFLUX_DB
+                        InfluxDB database
+  --influx_user INFLUX_USER
+                        InfluxDB username
+  --influx_pass INFLUX_PASS
+                        InfluxDB password
+```
+
 ### Examples
 
 If you wish to use ModbusTCP the following parameters are relevant:
