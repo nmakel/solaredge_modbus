@@ -22,8 +22,12 @@ if __name__ == "__main__":
     argparser.add_argument("--influx_pass", type=str, help="InfluxDB password")
     args = argparser.parse_args()
 
-    client = InfluxDBClient(host=args.influx_host, port=args.influx_port)
-    client.switch_database(args.influx_db)
+    try:
+        client = InfluxDBClient(host=args.influx_host, port=args.influx_port)
+        client.switch_database(args.influx_db)
+    except (ConnectionRefusedError, requests.exceptions.ConnectionError):
+        print(f"database connection failed: {args.influx_host,}:{args.influx_port}/{args.influx_db}")
+        sys.exit()
 
     inverter = solaredge_modbus.Inverter(
         host=args.host,
