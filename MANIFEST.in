@@ -1,0 +1,4 @@
+include example.py
+include example_influxdb.py
+include LICENSE
+include requirements.txt
