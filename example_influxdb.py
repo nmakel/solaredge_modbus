@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
 from influxdb import InfluxDBClient
-from datetime import datetime
 import requests
 import sys
 import time
