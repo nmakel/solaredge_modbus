@@ -35,16 +35,13 @@ if __name__ == "__main__":
     )
 
     while True:
-
         values = {}
         values = inverter.read_all()
         meters = inverter.meters()
         batteries = inverter.batteries()
 
-        # prepare data for influxdb
         json_body = []
-        current_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-        # inverter, meters, batteries
+        current_time = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
 
         inverter_data = {
             "measurement": "inverter",
