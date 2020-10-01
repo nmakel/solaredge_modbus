@@ -15,6 +15,7 @@ if __name__ == "__main__":
     argparser.add_argument("port", type=int, help="ModbusTCP port")
     argparser.add_argument("--timeout", type=int, default=1, help="Connection timeout")
     argparser.add_argument("--unit", type=int, default=1, help="Modbus unit")
+    argparser.add_argument("--interval", type=int, default=10, help="Update interval")
     argparser.add_argument("--influx_host", type=str, default="localhost", help="InfluxDB host")
     argparser.add_argument("--influx_port", type=int, default=8086, help="InfluxDB port")
     argparser.add_argument("--influx_db", type=str, default="solaredge", help="InfluxDB database")
@@ -132,4 +133,4 @@ if __name__ == "__main__":
             json_body.append(battery_data)
 
         client.write_points(json_body)
-        time.sleep(1)
+        time.sleep(args.interval)
