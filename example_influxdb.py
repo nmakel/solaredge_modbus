@@ -57,26 +57,27 @@ if __name__ == "__main__":
             "time": current_time,
             "fields": {}
         }
-        for key,value in values.items():
-            if (isinstance(value, int) or isinstance(value, float)) and '_scale' not in key:
-                # search scale
-                splitted_key = key.split("_")
+
+        for k, v in values.items():
+            if (isinstance(v, int) or isinstance(v, float)) and "_scale" not in k:
+                k_split = k.split("_")
                 scale = 0
-                if splitted_key[len(splitted_key)-1] + "_scale" in values:
-                    scale = values[splitted_key[len(splitted_key)-1] + "_scale"]
-                elif key + "_scale" in values:
-                    scale = values[key + "_scale"]
+
+                if f"{k_split[len(k_split) - 1]}_scale" in values:
+                    scale = values[f"{k_split[len(k_split) - 1]}_scale"]
+                elif f"{k}_scale" in values:
+                    scale = values[f"{k}_scale"]
 
                 if scale < 0:
-                    value = value / 10**abs(scale)
+                    v = v / 10 ** abs(scale)
 
-                inverter_data["fields"].update({key: value})
+                inverter_data["fields"].update({k: v})
 
         json_body.append(inverter_data)
 
-        # read meters
-        for meter,params in meters.items():
+        for meter, params in meters.items():
             meter_values = params.read_all()
+
             meter_data = {
                 "measurement": "meter",
                 "tags": {
@@ -91,25 +92,24 @@ if __name__ == "__main__":
                 "fields": {}
             }
 
-            for key,value in meter_values.items():
-                if (isinstance(value, int) or isinstance(value, float)) and '_scale' not in key:
-                    # search scale
-                    splitted_key = key.split("_")
+            for k, v in meter_values.items():
+                if (isinstance(v, int) or isinstance(v, float)) and "_scale" not in k:
+                    k_split = k.split("_")
                     scale = 0
-                    if splitted_key[len(splitted_key)-1] + "_scale" in values:
-                        scale = meter_values[splitted_key[len(splitted_key)-1] + "_scale"]
-                    elif key + "_scale" in values:
-                        scale = meter_values[key + "_scale"]
+
+                    if f"{k_split[len(k_split) - 1]}_scale" in values:
+                        scale = values[f"{k_split[len(k_split) - 1]}_scale"]
+                    elif f"{k}_scale" in values:
+                        scale = values[f"{k}_scale"]
 
                     if scale < 0:
-                        value = value / 10**abs(scale)
+                        v = v / 10 ** abs(scale)
 
-                    meter_data["fields"].update({key: value})
+                    meter_data["fields"].update({k: v})
 
             json_body.append(meter_data)
 
-        # read batteries
-        for battery,params in batteries.items():
+        for battery, params in batteries.items():
             battery_values = params.read_all()
 
             battery_data = {
@@ -125,13 +125,11 @@ if __name__ == "__main__":
                 "fields": {}
             }
 
-            for key,value in battery_values.items():
-                if isinstance(value, int) or isinstance(value, float):
-                    battery_data["fields"].update({key: value})
+            for k, v in battery_values.items():
+                if isinstance(v, int) or isinstance(v, float):
+                    battery_data["fields"].update({k: v})
 
             json_body.append(battery_data)
-
-        #print(json.dumps(json_body, indent=4))
 
         client.write_points(json_body)
         time.sleep(1)
