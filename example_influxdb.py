@@ -101,6 +101,16 @@ if __name__ == "__main__":
                 
             meter_values["power_selfconsumption"] = inverter_power_ac - meter_power
 
+            if meter_power < 0:
+                meter_values["power_import_from_grid"] = abs(meter_power)
+            else:
+                meter_values["power_import_from_grid"] = 0
+            
+            if meter_power > 0:
+                meter_values["power_export_to_grid"] = meter_power
+            else:
+                meter_values["power_export_to_grid"] = 0
+
             for k, v in meter_values.items():
                 if (isinstance(v, int) or isinstance(v, float)) and "_scale" not in k:
                     k_split = k.split("_")
