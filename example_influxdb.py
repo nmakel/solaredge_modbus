@@ -72,7 +72,7 @@ if __name__ == "__main__":
                 if scale < 0:
                     v = v / 10 ** abs(scale)
 
-                inverter_data["fields"].update({k: v})
+                inverter_data["fields"].update({k: float(v)})
 
         json_body.append(inverter_data)
 
@@ -102,14 +102,14 @@ if __name__ == "__main__":
             meter_values["power_selfconsumption"] = inverter_power_ac - meter_power
 
             if meter_power < 0:
-                meter_values["power_import_from_grid"] = abs(meter_power)
+                meter_values["power_import_from_grid"] = float(abs(meter_power))
             else:
-                meter_values["power_import_from_grid"] = 0
+                meter_values["power_import_from_grid"] = float(0)
             
             if meter_power > 0:
-                meter_values["power_export_to_grid"] = meter_power
+                meter_values["power_export_to_grid"] = float(meter_power)
             else:
-                meter_values["power_export_to_grid"] = 0
+                meter_values["power_export_to_grid"] = float(0)
 
             for k, v in meter_values.items():
                 if (isinstance(v, int) or isinstance(v, float)) and "_scale" not in k:
