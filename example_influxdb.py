@@ -44,7 +44,7 @@ if __name__ == "__main__":
         batteries = inverter.batteries()
 
         json_body = []
-        current_time = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        current_time = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
         inverter_data = {
             "measurement": "inverter",
@@ -77,7 +77,7 @@ if __name__ == "__main__":
         json_body.append(inverter_data)
 
         for meter, params in meters.items():
-            meter_values = params.read_all()
+            meter_values = params.read_all() 
 
             meter_data = {
                 "measurement": "meter",
@@ -92,6 +92,17 @@ if __name__ == "__main__":
                 "time": current_time,
                 "fields": {}
             }
+
+            # calc self consumption from 
+            # inverter.power_ac, inverter.power_ac_scale 
+            # meter.power, meter.power_scale
+            inverter_power = values["power_ac"] / 10**abs(values["power_ac_scale"])
+            meter_power = meter_values["power"] / 10**abs(meter_values["power_scale"])
+                
+            meter_values["power_selfconsumption"] = inverter_power - meter_power
+            
+            # calc current pv power from battery.power and inverter.power_dc
+            #
 
             for k, v in meter_values.items():
                 if (isinstance(v, int) or isinstance(v, float)) and "_scale" not in k:
