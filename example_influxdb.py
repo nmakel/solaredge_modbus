@@ -96,8 +96,8 @@ if __name__ == "__main__":
             # calc self consumption from 
             # inverter.power_ac, inverter.power_ac_scale 
             # meter.power, meter.power_scale
-            inverter_power_ac = values["power_ac"] / 10**abs(values["power_ac_scale"])
-            meter_power = meter_values["power"] / 10**abs(meter_values["power_scale"])
+            inverter_power_ac = values["power_ac"] / 10 ** abs(values["power_ac_scale"])
+            meter_power = meter_values["power"] / 10 ** abs(meter_values["power_scale"])
                 
             meter_values["power_selfconsumption"] = inverter_power_ac - meter_power
 
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
             # calc current pv power from battery.power and inverter.power_dc
             # battery.instantaneous_power and inverter.power_dc, inverter.power_dc_scale 
-            inverter_power_dc = values["power_dc"] / 10**abs(values["power_dc_scale"])
+            inverter_power_dc = values["power_dc"] / 10 ** abs(values["power_dc_scale"])
             battery_power = battery_values["instantaneous_power"]
             battery_values["power_pv_dc"] = inverter_power_dc + battery_power
 
