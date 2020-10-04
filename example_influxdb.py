@@ -24,7 +24,16 @@ if __name__ == "__main__":
     args = argparser.parse_args()
 
     try:
-        client = InfluxDBClient(host=args.influx_host, port=args.influx_port)
+        if args.influx_user and args.influx_pass:
+            client = InfluxDBClient(
+                host=args.influx_host,
+                port=args.influx_port,
+                username=args.influx_user,
+                password=args.influx_pass
+            )
+        else:
+            client = InfluxDBClient(host=args.influx_host, port=args.influx_port)
+
         client.switch_database(args.influx_db)
     except (ConnectionRefusedError, requests.exceptions.ConnectionError):
         print(f"database connection failed: {args.influx_host,}:{args.influx_port}/{args.influx_db}")
