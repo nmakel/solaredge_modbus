@@ -161,9 +161,14 @@ Connecting to the inverter:
 Test the connection, remember that only a single connection at a time is allowed:
 
 ```
+    >>> inverter.connect()
+    True
+
     >>> inverter.connected()
     True
 ```
+
+While it is not necessary to explicitly call `connect()` before reading registers, you should do so before calling `connected()` to test the connection. When done, the connection can be closed by calling `disconnect()`.
 
 Printing the class yields basic device parameters:
 
