@@ -292,8 +292,14 @@ class SolarEdge:
 
         return results
 
+    def connect(self):
+        return self.client.connect()
+
+    def disconnect(self):
+        self.client.close()
+
     def connected(self):
-        return bool(self.client.connect())
+        return self.client.is_socket_open()
 
     def read(self, key):
         if key not in self.registers:
