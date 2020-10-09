@@ -86,7 +86,7 @@ if __name__ == "__main__":
         json_body.append(inverter_data)
 
         for meter, params in meters.items():
-            meter_values = params.read_all() 
+            meter_values = params.read_all()
 
             meter_data = {
                 "measurement": "meter",
@@ -102,19 +102,19 @@ if __name__ == "__main__":
                 "fields": {}
             }
 
-            # calc self consumption from 
-            # inverter.power_ac, inverter.power_ac_scale 
+            # calc self consumption from
+            # inverter.power_ac, inverter.power_ac_scale
             # meter.power, meter.power_scale
             inverter_power_ac = values["power_ac"] / 10 ** abs(values["power_ac_scale"])
             meter_power = meter_values["power"] / 10 ** abs(meter_values["power_scale"])
-                
+
             meter_values["power_selfconsumption"] = inverter_power_ac - meter_power
 
             if meter_power < 0:
                 meter_values["power_import_from_grid"] = float(abs(meter_power))
             else:
                 meter_values["power_import_from_grid"] = float(0)
-            
+
             if meter_power > 0:
                 meter_values["power_export_to_grid"] = float(meter_power)
             else:
@@ -141,7 +141,7 @@ if __name__ == "__main__":
             battery_values = params.read_all()
 
             # calc current pv power from battery.power and inverter.power_dc
-            # battery.instantaneous_power and inverter.power_dc, inverter.power_dc_scale 
+            # battery.instantaneous_power and inverter.power_dc, inverter.power_dc_scale
             inverter_power_dc = values["power_dc"] / 10 ** abs(values["power_dc_scale"])
             battery_power = battery_values["instantaneous_power"]
             battery_values["power_pv_dc"] = inverter_power_dc + battery_power
