@@ -421,8 +421,8 @@ class Inverter(SolarEdge):
         ]
 
         self.battery_dids = [
-            (0xE140, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
-            (0xE240, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
+            (0xe140, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
+            (0xe240, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
         ]
 
     def meters(self):
