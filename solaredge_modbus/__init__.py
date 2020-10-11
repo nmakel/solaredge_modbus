@@ -16,12 +16,18 @@ class sunspecDID(enum.Enum):
     SINGLE_PHASE_INVERTER = 101
     SPLIT_PHASE_INVERTER = 102
     THREE_PHASE_INVERTER = 103
-    SINGLE_PHASE_METER = 104
-    THREE_PHASE_METER = 105
-    SINGLE_PHASE_METER_2 = 201
-    THREE_PHASE_METER_2 = 202
+    SINGLE_PHASE_METER = 201
+    SPLIT_PHASE_METER = 202
     WYE_THREE_PHASE_METER = 203
     DELTA_THREE_PHASE_METER = 204
+    BATTERY_BASE = 802
+    LI_BATTERY_BANK = 803
+    LI_BATTERY_STRING = 804
+    LI_BATTERY_MODULE = 805
+    FLOW_BATTERY = 806
+    FLOW_BATTERY_STRING = 807
+    FLOW_BATTERY_MODULE = 808
+    FLOW_BATTERY_STACK = 809
 
 
 class inverterStatus(enum.Enum):
@@ -57,37 +63,36 @@ class registerType(enum.Enum):
 
 class registerDataType(enum.Enum):
     BITS = 1
+    INT8 = 6
     UINT8 = 2
+    INT16 = 7
     UINT16 = 3
     ACC16 = 3
+    INT32 = 8
     UINT32 = 4
     ACC32 = 4
+    INT64 = 9
     UINT64 = 5
     ACC64 = 5
-    INT8 = 6
-    INT16 = 7
-    SCALE = 7
-    INT32 = 8
-    INT64 = 9
-    FLOAT16 = 10
     FLOAT32 = 11
-    FLOAT = 11
+    SEFLOAT = 11
+    SCALE = 7
     STRING = 12
 
 
 SUNSPEC_NOTIMPLEMENTED = {
+    "INT16": 0x8000,
     "UINT16": 0xffff,
     "ACC16": 0x0000,
+    "INT32": 0x80000000,
     "UINT32": 0xffffffff,
     "ACC32": 0x00000000,
+    "INT64": 0x8000000000000000,
     "UINT64": 0xffffffffffffffff,
     "ACC64": 0x0000000000000000,
-    "INT16": 0x8000,
+    "FLOAT32": 0x7fc00000,
+    "SEFLOAT": 0xffffffff,
     "SCALE": 0x8000,
-    "INT32": 0x80000000,
-    "INT64": 0x8000000000000000,
-    "FLOAT": 0x7fc00000,
-    "FLOAT32": 0xffffffff,
     "STRING": ""
 }
 
@@ -95,12 +100,18 @@ C_SUNSPEC_DID_MAP = {
     "101": "Single Phase Inverter",
     "102": "Split Phase Inverter",
     "103": "Three Phase Inverter",
-    "104": "Single Phase Meter",
-    "105": "Three Phase Meter",
     "201": "Single Phase Meter",
     "202": "Split Phase Meter",
-    "203": "3P1N Three Phase Meter",
-    "204": "3P Three Phase Meter"
+    "203": "Wye 3P1N Three Phase Meter",
+    "204": "Delta 3P Three Phase Meter",
+    "802": "Battery",
+    "803": "Lithium Ion Bank Battery",
+    "804": "Lithium Ion String Battery",
+    "805": "Lithium Ion Module Battery",
+    "806": "Flow Battery",
+    "807": "Flow String Battery",
+    "808": "Flow Module Battery",
+    "809": "Flow Stack Battery"
 }
 
 INVERTER_STATUS_MAP = [
