@@ -143,6 +143,7 @@ class SolarEdge:
     stopbits = 1
     parity = "N"
     baud = 115200
+    wordorder = Endian.Big
 
     def __init__(
         self, host=False, port=False,
@@ -348,6 +349,7 @@ class Inverter(SolarEdge):
 
     def __init__(self, *args, **kwargs):
         self.model = "Inverter"
+        self.wordorder=Endian.Big
 
         super().__init__(*args, **kwargs)
 
@@ -431,6 +433,7 @@ class Meter(SolarEdge):
 
     def __init__(self, offset=False, *args, **kwargs):
         self.model = f"Meter{offset + 1}"
+        self.wordorder = Endian.Big
 
         super().__init__(*args, **kwargs)
 
@@ -531,6 +534,7 @@ class Battery(SolarEdge):
 
     def __init__(self, offset=False, *args, **kwargs):
         self.model = f"Battery{offset + 1}"
+        self.wordorder = Endian.Little
 
         super().__init__(*args, **kwargs)
 
