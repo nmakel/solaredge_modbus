@@ -62,37 +62,26 @@ class registerType(enum.Enum):
 
 
 class registerDataType(enum.Enum):
-    BITS = 1
-    INT8 = 6
-    UINT8 = 2
-    INT16 = 7
-    UINT16 = 3
-    ACC16 = 3
-    INT32 = 8
-    UINT32 = 4
-    ACC32 = 4
-    INT64 = 9
-    UINT64 = 5
-    ACC64 = 5
-    FLOAT32 = 11
-    SEFLOAT = 11
-    SCALE = 7
-    STRING = 12
+    UINT16 = 1
+    UINT32 = 2
+    UINT64 = 3
+    INT16 = 4
+    SCALE = 4
+    ACC32 = 5
+    FLOAT32 = 6
+    SEFLOAT = 7
+    STRING = 9
 
 
 SUNSPEC_NOTIMPLEMENTED = {
-    "INT16": 0x8000,
     "UINT16": 0xffff,
-    "ACC16": 0x0000,
-    "INT32": 0x80000000,
     "UINT32": 0xffffffff,
-    "ACC32": 0x00000000,
-    "INT64": 0x8000000000000000,
     "UINT64": 0xffffffffffffffff,
-    "ACC64": 0x0000000000000000,
+    "INT16": 0x8000,
+    "SCALE": 0x8000,
+    "ACC32": 0x00000000,
     "FLOAT32": 0x7fc00000,
     "SEFLOAT": 0xffffffff,
-    "SCALE": 0x8000,
     "STRING": ""
 }
 
@@ -232,7 +221,7 @@ class SolarEdge:
             if len(result.registers) != length:
                 continue
 
-            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=self.wordorder)
 
         return None
 
@@ -240,13 +229,15 @@ class SolarEdge:
         try:
             if dtype == registerDataType.UINT16:
                 decoded = data.decode_16bit_uint()
-            elif dtype == registerDataType.UINT32:
+            elif (dtype == registerDataType.UINT32 or
+                  dtype == registerDataType.ACC32):
                 decoded = data.decode_32bit_uint()
             elif dtype == registerDataType.UINT64:
                 decoded = data.decode_64bit_uint()
             elif dtype == registerDataType.INT16:
                 decoded = data.decode_16bit_int()
-            elif dtype == registerDataType.FLOAT32:
+            elif (dtype == registerDataType.FLOAT32 or
+                  dtype == registerDataType.SEFLOAT):
                 decoded = data.decode_32bit_float()
             elif dtype == registerDataType.STRING:
                 decoded = data.decode_string(length * 2).decode("utf-8").replace("\x00", "").rstrip()
@@ -254,7 +245,7 @@ class SolarEdge:
                 raise NotImplementedError(dtype)
 
             if decoded == SUNSPEC_NOTIMPLEMENTED[dtype.name]:
-                return False
+                return vtype(False)
             else:
                 return vtype(decoded)
         except NotImplementedError:
