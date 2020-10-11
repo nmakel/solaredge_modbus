@@ -35,6 +35,16 @@ class inverterStatus(enum.Enum):
     I_STATUS_STANDBY = 8
 
 
+class batteryStatus(enum.Enum):
+    B_STATUS_OFF = 1
+    B_STATUS_EMPTY = 2
+    B_STATUS_DISCHARGING = 3
+    B_STATUS_CHARGING = 4
+    B_STATUS_FULL = 5
+    B_STATUS_HOLDING = 6
+    B_STATUS_TESTING = 7
+
+
 class connectionType(enum.Enum):
     RTU = 1
     TCP = 2
@@ -103,6 +113,16 @@ INVERTER_STATUS_MAP = [
     "Shutting Down",
     "Fault",
     "Standby"
+]
+
+BATTERY_STATUS_MAP = [
+    "Off",
+    "Empty",
+    "Discharging",
+    "Charging",
+    "Full",
+    "Holding",
+    "Testing"
 ]
 
 METER_REGISTER_OFFSETS = [
