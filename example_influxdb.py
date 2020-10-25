@@ -58,6 +58,7 @@ if __name__ == "__main__":
         inverter_data = {
             "measurement": "inverter",
             "tags": {
+                "c_manufacturer": values["c_manufacturer"],
                 "c_model": values["c_model"],
                 "c_version": values["c_version"],
                 "c_serialnumber": values["c_serialnumber"],
@@ -91,6 +92,7 @@ if __name__ == "__main__":
             meter_data = {
                 "measurement": "meter",
                 "tags": {
+                    "c_manufacturer": values["c_manufacturer"],
                     "c_model": meter_values["c_model"],
                     "c_option": meter_values["c_option"],
                     "c_version": meter_values["c_version"],

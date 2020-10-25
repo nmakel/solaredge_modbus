@@ -43,6 +43,7 @@ if __name__ == "__main__":
         print(f"{inverter}:")
         print("\nRegisters:")
 
+        print(f"\tManufacturer: {values['c_manufacturer']}")
         print(f"\tModel: {values['c_model']}")
         print(f"\tType: {solaredge_modbus.C_SUNSPEC_DID_MAP[str(values['c_sunspec_did'])]}")
         print(f"\tVersion: {values['c_version']}")
