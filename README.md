@@ -241,11 +241,29 @@ If you need more information about a particular register, to look up the units o
 ```
     >>> inverter.registers["current"]
         # address, length, type, datatype, valuetype, name, unit, batching
-        (40071, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Current', 'A', 2)
+        (
+            40071, 
+            1, 
+            <registerType.HOLDING: 2>, 
+            <registerDataType.UINT16: 3>, 
+            <class 'int'>, 
+            'Current', 
+            'A', 
+            2
+        )
 
     >>> inverter.registers["status"]
         # address, length, type, datatype, valuetype, name, unit, batching
-        (40107, 1, <registerType.HOLDING: 2>, <registerDataType.UINT16: 3>, <class 'int'>, 'Status', ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'], 2)
+        (
+            40107, 
+            1, 
+            <registerType.HOLDING: 2>, 
+            <registerDataType.UINT16: 3>, 
+            <class 'int'>, 
+            'Status', 
+            ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'], 
+            2
+        )
 ```
 
 ### Meters & Batteries
