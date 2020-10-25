@@ -151,11 +151,12 @@ if __name__ == "__main__":
             battery_data = {
                 "measurement": "battery",
                 "tags": {
-                    "manufacturer_name": battery_values["manufacturer_name"],
-                    "model": battery_values["model"],
-                    "firmware_version": battery_values["firmware_version"],
-                    "serial_number": battery_values["serial_number"],
-                    "device_id": battery_values["device_id"],
+                    "c_manufacturer": values["c_manufacturer"],
+                    "c_model": values["c_model"],
+                    "c_version": values["c_version"],
+                    "c_serialnumber": values["c_serialnumber"],
+                    "c_deviceaddress": values["c_deviceaddress"],
+                    "c_sunspec_did": values["c_sunspec_did"]
                 },
                 "time": current_time,
                 "fields": {}
