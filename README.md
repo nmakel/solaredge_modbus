@@ -36,6 +36,7 @@ Output:
 Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1):
 
 Registers:
+    Manufacturer: SolarEdge
     Model: SE3500H-RW000BNN4
     Type: Single Phase Inverter
     Version: 0004.0009.0030
@@ -59,6 +60,7 @@ Passing `--json` returns:
 
 ```
 {
+    "c_manufacturer": "SolarEdge",
     'c_model': 'SE3500H-RW000BNN4',
     'c_version': '0004.0009.0030',
     'c_serialnumber': '123ABC12',
@@ -191,6 +193,7 @@ Read all input registers using `read_all()`:
 ```
     >>> inverter.read_all()
     {
+        'c_manufacturer': 'SolarEdge',
         'c_model': 'SE3500H-RW000BNN4',
         'c_version': '0004.0009.0030',
         'c_serialnumber': '123ABC12',
@@ -261,6 +264,7 @@ SolarEdge supports various kWh meters and batteries, and exposes their registers
 
     >>> meter1.read_all()
     {
+        'c_manufacturer': 'SolarEdge',
         'c_model': 'PRO380-Mod',
         'c_option': 'Export+Import',
         'c_version': '2.19',
