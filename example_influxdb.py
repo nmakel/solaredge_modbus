@@ -135,7 +135,7 @@ if __name__ == "__main__":
                     if scale < 0:
                         v = v / 10 ** abs(scale)
 
-                    meter_data["fields"].update({k: v})
+                    meter_data["fields"].update({k: float(v)})
 
             json_body.append(meter_data)
 
