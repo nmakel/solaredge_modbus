@@ -352,7 +352,7 @@ class Inverter(SolarEdge):
 
     def __init__(self, *args, **kwargs):
         self.model = "Inverter"
-        self.wordorder=Endian.Big
+        self.wordorder = Endian.Big
 
         super().__init__(*args, **kwargs)
 
@@ -574,7 +574,7 @@ class Battery(SolarEdge):
 
             "status": (0xe186 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "Status", BATTERY_STATUS_MAP, 2),
             "status_internal": (0xe188 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "Internal Status", BATTERY_STATUS_MAP, 2),
-            
+
             "event_log": (0xe18a + self.offset, 2, registerType.HOLDING, registerDataType.UINT16, int, "Event Log", "", 2),
             "event_log_internal": (0xe192 + self.offset, 2, registerType.HOLDING, registerDataType.UINT16, int, "Internal Event Log", "", 2),
         }
