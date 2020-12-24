@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
         print(f"\tCurrent: {(values['current'] * (10 ** values['temperature_scale'])):.2f}{inverter.registers['current'][6]}")
 
-        if values['c_sunspec_did'] is solaredge_modbus.sunspecDID.THREE_PHASE_INVERTER:
+        if values['c_sunspec_did'] is solaredge_modbus.sunspecDID.THREE_PHASE_INVERTER.value:
             print(f"\tPhase 1 Current: {(values['p1_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p1_current'][6]}")
             print(f"\tPhase 2 Current: {(values['p2_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p2_current'][6]}")
             print(f"\tPhase 3 Current: {(values['p3_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p3_current'][6]}")
