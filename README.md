@@ -1,6 +1,6 @@
 # solaredge_modbus
 
-solaredge_modbus is a python library that collects data from SolarEdge power inverters over Modbus or ModbusTCP.
+solaredge_modbus is a python library that collects data from SolarEdge power inverters over Modbus RTU or Modbus TCP.
 
 ## Installation
 
@@ -14,19 +14,19 @@ or install the package from PyPi:
 
 ## Usage
 
-The script `example.py` provides a minimal example of connecting to and displaying all registers from a SolarEdge power inverter over ModbusTCP.
+The script `example.py` provides a minimal example of connecting to and displaying all registers from a SolarEdge power inverter over Modbus TCP.
 
 ```
 usage: example.py [-h] [--timeout TIMEOUT] [--unit UNIT] [--json] host port
 
 positional arguments:
-  host               ModbusTCP address
-  port               ModbusTCP port
+  host               Modbus TCP address
+  port               Modbus TCP port
 
 optional arguments:
   -h, --help         show this help message and exit
   --timeout TIMEOUT  Connection timeout
-  --unit UNIT        Modbus unit
+  --unit UNIT        Modbus device address
   --json             Output as JSON
 ```
 
@@ -105,7 +105,7 @@ Passing `--json` returns:
 
 Note that if kWh meters or batteries are connected to your inverter, these will also be presented in the JSON output.
 
-A second script, `example_influxdb.py` provides an example InfluxDB writer. It connects to an inverter over ModbusTCP, and writes inverter, battery and meter values to an InfluxDB every second.
+A second script, `example_influxdb.py` provides an example InfluxDB writer. It connects to an inverter over Modbus TCP, and writes inverter, battery and meter values to an InfluxDB every second.
 
 
 ```
@@ -114,13 +114,13 @@ usage: example_influxdb.py [-h] [--timeout TIMEOUT] [--unit UNIT] [--interval IN
                            host port
 
 positional arguments:
-  host                  ModbusTCP address
-  port                  ModbusTCP port
+  host                  Modbus TCP address
+  port                  Modbus TCP port
 
 optional arguments:
   -h, --help            show this help message and exit
   --timeout TIMEOUT     Connection timeout
-  --unit UNIT           Modbus unit
+  --unit UNIT           Modbus device address
   --interval INTERVAL   Update interval
   --influx_host INFLUX_HOST
                         InfluxDB host
@@ -134,26 +134,26 @@ optional arguments:
                         InfluxDB password
 ```
 
-### Examples
+### Connecting
 
-If you wish to use ModbusTCP the following parameters are relevant:
+If you wish to use Modbus TCP the following parameters are relevant:
 
-`host = IP or DNS name of your ModbusTCP device, required`  
-`port = listening port of the ModbusTCP device, required`  
-`unit = Modbus device id, default=1, optional`
+`host = IP or DNS name of your Modbus TCP device, required`  
+`port = TCP port of the Modbus TCP device, required`  
+`unit = Modbus device address, default=1, optional`
 
 While if you are using a serial Modbus connection you can specify:
 
 `device = path to serial device, e.g. /dev/ttyUSB0, required`  
 `baud = baud rate of your device, defaults to product default, optional`  
-`unit = Modbus unit id, defaults to 1, optional`
+`unit = Modbus device address, defaults to 1, optional`
 
 Connecting to the inverter:
 
 ```
     >>> import solaredge_modbus
 
-    # Inverter over ModbusTCP
+    # Inverter over Modbus TCP
     >>> inverter = solaredge_modbus.Inverter(host="10.0.0.123", port=1502)
     
     # Inverter over Modbus RTU
@@ -318,17 +318,17 @@ Calling `meters()` or `batteries()` on an inverter object is the recommended way
     # Meter #1 via the existing inverter connection
     >>> meter1 = solaredge_modbus.Meter(parent=inverter, offset=0)
 
-    # Meter #2 over ModbusTCP, without a parent connection
+    # Meter #2 over Modbus TCP, without a parent connection
     >>> meter2 = solaredge_modbus.Meter(host="10.0.0.123", port=1502, offset=1)
 
     # Battery #1 via the existing inverter connection
     >>> battery1 = solaredge_modbus.Battery(parent=inverter, offset=0)
 
-    # Battery #1 over ModbusTCP, without a parent connection
+    # Battery #1 over Modbus TCP, without a parent connection
     >>> battery1 = solaredge_modbus.Battery(host="10.0.0.123", port=1502, offset=1)
 ```
 
-There are two points to consider when doing this. You will need to manually pass the `parent` and `offset` parameters, which take care of sharing an existing Modbus connection, and set the correct register addresses. Use `offset` 0 for the first device, 1 for the second, and 2 for the third. If you do not pass a parent inverter object, you will need to supply connection parameters just like those required by the inverter object. Remember that a second ModbusTCP or Modbus RTU connection will fail when already in use by another inverter, meter, or battery object.
+There are two points to consider when doing this. You will need to manually pass the `parent` and `offset` parameters, which take care of sharing an existing Modbus connection, and set the correct register addresses. Use `offset` 0 for the first device, 1 for the second, and 2 for the third. If you do not pass a parent inverter object, you will need to supply connection parameters just like those required by the inverter object. Remember that a second Modbus TCP or Modbus RTU connection will fail when already in use by another inverter, meter, or battery object.
 
 **Note:** as I do not have access to a compatible kWh meter nor battery, this implementation is not thoroughly tested. If you have issues with this functionality, please open a GitHub issue.
 
