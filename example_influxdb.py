@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
 import argparse
-from influxdb import InfluxDBClient
-import requests
 import sys
 import time
 
+from influxdb import InfluxDBClient
+import requests
 import solaredge_modbus
 
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("host", type=str, help="ModbusTCP address")
-    argparser.add_argument("port", type=int, help="ModbusTCP port")
+    argparser.add_argument("host", type=str, help="Modbus TCP address")
+    argparser.add_argument("port", type=int, help="Modbus TCP port")
     argparser.add_argument("--timeout", type=int, default=1, help="Connection timeout")
-    argparser.add_argument("--unit", type=int, default=1, help="Modbus unit")
+    argparser.add_argument("--unit", type=int, default=1, help="Modbus device address")
     argparser.add_argument("--interval", type=int, default=10, help="Update interval")
     argparser.add_argument("--influx_host", type=str, default="localhost", help="InfluxDB host")
     argparser.add_argument("--influx_port", type=int, default=8086, help="InfluxDB port")
