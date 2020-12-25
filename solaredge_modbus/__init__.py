@@ -154,10 +154,9 @@ class SolarEdge:
         if parent:
             self.client = parent.client
             self.mode = parent.mode
-            self.client = parent.client
             self.timeout = parent.timeout
             self.retries = parent.retries
-            
+
             if unit:
                 self.unit = unit
             else:
@@ -173,7 +172,6 @@ class SolarEdge:
                 self.port = parent.port
             else:
                 raise NotImplementedError(self.mode)
-
         else:
             self.host = host
             self.port = port
