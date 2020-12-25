@@ -1,6 +1,6 @@
 # solaredge_modbus
 
-solaredge_modbus is a python library that collects data from SolarEdge power inverters over Modbus RTU or Modbus TCP.
+solaredge_modbus is a python library that collects data from SolarEdge inverters over Modbus RTU or Modbus TCP.
 
 ## Installation
 
@@ -142,7 +142,7 @@ If you wish to use Modbus TCP the following parameters are relevant:
 `port = TCP port of the Modbus TCP device, required`  
 `unit = Modbus device address, default=1, optional`
 
-While if you are using a serial Modbus connection you can specify:
+While if you are using a Modbus RTU connection you can specify:
 
 `device = path to serial device, e.g. /dev/ttyUSB0, required`  
 `baud = baud rate of your device, defaults to product default, optional`  
