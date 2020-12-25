@@ -170,7 +170,7 @@ Test the connection, remember that only a single connection at a time is allowed
     True
 ```
 
-While it is not necessary to explicitly call `connect()` before reading registers, you should do so before calling `connected()` to test the connection. When done, the connection can be closed by calling `disconnect()`.
+While it is not necessary to explicitly call `connect()` before reading registers, you should do so before calling `connected()`. The connection can be closed by calling `disconnect()`.
 
 Printing the class yields basic device parameters:
 
@@ -178,6 +178,8 @@ Printing the class yields basic device parameters:
     >>> inverter
     Inverter(10.0.0.123:1502, connectionType.TCP: timeout=1, retries=3, unit=0x1)
 ```
+
+### Reading Registers
 
 Reading a single input register by name:
 
@@ -236,6 +238,8 @@ Read all input registers using `read_all()`:
     }
 ```
 
+### Register Details
+
 If you need more information about a particular register, to look up the units or enumerations, for example:
 
 ```
@@ -264,6 +268,21 @@ If you need more information about a particular register, to look up the units o
             ['Undefined', 'Off', 'Sleeping', 'Grid Monitoring', 'Producing', 'Producing (Throttled)', 'Shutting Down', 'Fault', 'Standby'], 
             2
         )
+```
+
+### Multiple Inverters
+
+If you have multiple inverters connected together over the RS485 bus, you can query the individual inverters using Modbus RTU or Modbus TCP by instantiating multiple inverter objects:
+
+```
+    # Master inverter over Modbus TCP
+    >>> master = solaredge_modbus.Inverter(host="10.0.0.123", port=1502, unit=1)
+
+    # Second inverter using master's connection
+    >>> second = solaredge_modbus.Inverter(parent=master, unit=2)
+
+    # Third inverter
+    >>> third = solaredge_modbus.Inverter(parent=master, unit=3)
 ```
 
 ### Meters & Batteries
