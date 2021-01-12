@@ -246,7 +246,7 @@ class SolarEdge:
                   dtype == registerDataType.SEFLOAT):
                 decoded = data.decode_32bit_float()
             elif dtype == registerDataType.STRING:
-                decoded = data.decode_string(length * 2).decode()
+                decoded = data.decode_string(length * 2).decode(encoding="utf-8", errors="ignore").replace("\x00", "").rstrip()
             else:
                 raise NotImplementedError(dtype)
 
