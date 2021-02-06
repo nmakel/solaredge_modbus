@@ -1,1 +1,1 @@
-pymodbus>=2.3.0
+pymodbus>=2.4.0
