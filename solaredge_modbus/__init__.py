@@ -1,4 +1,5 @@
 import enum
+import time
 
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
@@ -220,7 +221,12 @@ class SolarEdge:
 
     def _read_holding_registers(self, address, length):
         for i in range(self.retries):
-            result = self.client.read_holding_registers(address=address, count=length, unit=self.unit)
+            if not self.connected():
+                self.connect()
+                time.sleep(0.1)
+                continue
+
+            result = self.client.read_holding_registers(address, length, unit=self.unit)
 
             if not isinstance(result, ReadHoldingRegistersResponse):
                 continue
