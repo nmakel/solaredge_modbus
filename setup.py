@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="solaredge_modbus",
-    version="0.6.4",
+    version="0.6.5",
     description="SolarEdge Modbus parser library",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -19,7 +19,7 @@ setuptools.setup(
     packages=["solaredge_modbus"],
     include_package_data=True,
     install_requires=[
-        "pymodbus>=2.3.0"
+        "pymodbus>=2.4.0"
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
