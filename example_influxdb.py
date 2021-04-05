@@ -79,10 +79,7 @@ if __name__ == "__main__":
                 elif f"{k}_scale" in values:
                     scale = values[f"{k}_scale"]
 
-                if scale < 0:
-                    v = v / 10 ** abs(scale)
-
-                inverter_data["fields"].update({k: float(v)})
+                inverter_data["fields"].update({k: float(v * (10 ** scale))})
 
         json_body.append(inverter_data)
 
@@ -107,8 +104,8 @@ if __name__ == "__main__":
             # calc self consumption from
             # inverter.power_ac, inverter.power_ac_scale
             # meter.power, meter.power_scale
-            inverter_power_ac = values["power_ac"] / 10 ** abs(values["power_ac_scale"])
-            meter_power = meter_values["power"] / 10 ** abs(meter_values["power_scale"])
+            inverter_power_ac = values["power_ac"] * (10 ** values["power_ac_scale"])
+            meter_power = meter_values["power"] * (10 ** meter_values["power_scale"])
 
             meter_values["power_selfconsumption"] = inverter_power_ac - meter_power
 
@@ -127,15 +124,12 @@ if __name__ == "__main__":
                     k_split = k.split("_")
                     scale = 0
 
-                    if f"{k_split[len(k_split) - 1]}_scale" in values:
-                        scale = values[f"{k_split[len(k_split) - 1]}_scale"]
-                    elif f"{k}_scale" in values:
-                        scale = values[f"{k}_scale"]
+                    if f"{k_split[len(k_split) - 1]}_scale" in meter_values:
+                        scale = meter_values[f"{k_split[len(k_split) - 1]}_scale"]
+                    elif f"{k}_scale" in meter_values:
+                        scale = meter_values[f"{k}_scale"]
 
-                    if scale < 0:
-                        v = v / 10 ** abs(scale)
-
-                    meter_data["fields"].update({k: float(v)})
+                    meter_data["fields"].update({k: float(v * (10 ** scale))})
 
             json_body.append(meter_data)
 
@@ -144,7 +138,7 @@ if __name__ == "__main__":
 
             # calc current pv power from battery.power and inverter.power_dc
             # battery.instantaneous_power and inverter.power_dc, inverter.power_dc_scale
-            inverter_power_dc = values["power_dc"] / 10 ** abs(values["power_dc_scale"])
+            inverter_power_dc = values["power_dc"] * (10 ** values["power_dc_scale"])
             battery_power = battery_values["instantaneous_power"]
             battery_values["power_pv_dc"] = inverter_power_dc + battery_power
 
