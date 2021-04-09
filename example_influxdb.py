@@ -101,24 +101,6 @@ if __name__ == "__main__":
                 "fields": {}
             }
 
-            # calc self consumption from
-            # inverter.power_ac, inverter.power_ac_scale
-            # meter.power, meter.power_scale
-            inverter_power_ac = values["power_ac"] * (10 ** values["power_ac_scale"])
-            meter_power = meter_values["power"] * (10 ** meter_values["power_scale"])
-
-            meter_values["power_selfconsumption"] = inverter_power_ac - meter_power
-
-            if meter_power < 0:
-                meter_values["power_import_from_grid"] = float(abs(meter_power))
-            else:
-                meter_values["power_import_from_grid"] = float(0)
-
-            if meter_power > 0:
-                meter_values["power_export_to_grid"] = float(meter_power)
-            else:
-                meter_values["power_export_to_grid"] = float(0)
-
             for k, v in meter_values.items():
                 if (isinstance(v, int) or isinstance(v, float)) and "_scale" not in k:
                     k_split = k.split("_")
@@ -135,12 +117,6 @@ if __name__ == "__main__":
 
         for battery, params in batteries.items():
             battery_values = params.read_all()
-
-            # calc current pv power from battery.power and inverter.power_dc
-            # battery.instantaneous_power and inverter.power_dc, inverter.power_dc_scale
-            inverter_power_dc = values["power_dc"] * (10 ** values["power_dc_scale"])
-            battery_power = battery_values["instantaneous_power"]
-            battery_values["power_pv_dc"] = inverter_power_dc + battery_power
 
             battery_data = {
                 "measurement": "battery",
