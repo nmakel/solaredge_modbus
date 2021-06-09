@@ -51,7 +51,7 @@ if __name__ == "__main__":
         print(f"\tStatus: {solaredge_modbus.INVERTER_STATUS_MAP[values['status']]}")
         print(f"\tTemperature: {(values['temperature'] * (10 ** values['temperature_scale'])):.2f}{inverter.registers['temperature'][6]}")
 
-        print(f"\tCurrent: {(values['current'] * (10 ** values['temperature_scale'])):.2f}{inverter.registers['current'][6]}")
+        print(f"\tCurrent: {(values['current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['current'][6]}")
 
         if values['c_sunspec_did'] is solaredge_modbus.sunspecDID.THREE_PHASE_INVERTER.value:
             print(f"\tPhase 1 Current: {(values['p1_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p1_current'][6]}")
