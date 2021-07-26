@@ -118,12 +118,12 @@ INVERTER_STATUS_MAP = [
 
 BATTERY_STATUS_MAP = [
     "Off",
-    "Empty",
-    "Discharging",
-    "Charging",
-    "Full",
-    "Holding",
-    "Testing"
+    "Standby",
+    "Init",
+    "Charge",
+    "Discharge",
+    "Fault",
+    "Idle"
 ]
 
 METER_REGISTER_OFFSETS = [
