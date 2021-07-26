@@ -409,7 +409,11 @@ class Inverter(SolarEdge):
             "temperature_scale": (0x9caa, 1, registerType.HOLDING, registerDataType.SCALE, int, "Temperature Scale Factor", "", 2),
 
             "status": (0x9cab, 1, registerType.HOLDING, registerDataType.UINT16, int, "Status", INVERTER_STATUS_MAP, 2),
-            "vendor_status": (0x9cac, 1, registerType.HOLDING, registerDataType.UINT16, int, "Vendor Status", "", 2)
+            "vendor_status": (0x9cac, 1, registerType.HOLDING, registerDataType.UINT16, int, "Vendor Status", "", 2),
+
+            "rrcr_state": (0xf000, 1, registerType.HOLDING, registerDataType.UINT16, int, "RRCR State", "", 3),
+            "active_power_limit": (0xf001, 1, registerType.HOLDING, registerDataType.UINT16, int, "Active Power Limit", "%", 3),
+            "cosphi": (0xf002, 2, registerType.HOLDING, registerDataType.FLOAT32, int, "CosPhi", "", 3)
         }
 
         self.meter_dids = [
