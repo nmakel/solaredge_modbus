@@ -231,6 +231,9 @@ class SolarEdge:
 
         return None
 
+    def _write_holding_register(self, address, value):
+        return self.client.write_registers(address=address, values=value, unit=self.unit)
+
     def _decode_value(self, data, length, dtype, vtype):
         try:
             if dtype == registerDataType.UINT16:
@@ -320,6 +323,17 @@ class SolarEdge:
 
         return results
 
+    def _write(self, value, data):
+        address, length, rtype, dtype, vtype, label, fmt, batch = value
+
+        try:
+            if rtype == registerType.HOLDING:
+                return self._write_holding_register(address, self._encode_value(data, dtype))
+            else:
+                raise NotImplementedError(rtype)
+        except NotImplementedError:
+            raise
+
     def connect(self):
         return self.client.connect()
 
@@ -334,6 +348,12 @@ class SolarEdge:
             raise KeyError(key)
 
         return {key: self._read(self.registers[key])}
+
+    def write(self, key, data):
+        if key not in self.registers:
+            raise KeyError(key)
+
+        return self._write(self.registers[key], data)
 
     def read_all(self, rtype=registerType.HOLDING):
         registers = {k: v for k, v in self.registers.items() if (v[2] == rtype)}
