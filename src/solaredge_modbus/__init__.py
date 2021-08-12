@@ -2,6 +2,7 @@ import enum
 import time
 
 from pymodbus.constants import Endian
+from pymodbus.payload import BinaryPayloadBuilder
 from pymodbus.payload import BinaryPayloadDecoder
 from pymodbus.client.sync import ModbusTcpClient
 from pymodbus.client.sync import ModbusSerialClient
@@ -233,6 +234,31 @@ class SolarEdge:
 
     def _write_holding_register(self, address, value):
         return self.client.write_registers(address=address, values=value, unit=self.unit)
+
+    def _encode_value(self, data, dtype):
+        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=self.wordorder)
+
+        try:
+            if dtype == registerDataType.UINT16:
+                builder.add_16bit_uint(data)
+            elif dtype == registerDataType.UINT32:
+                builder.add_32bit_uint(data)
+            elif dtype == registerDataType.UINT64:
+                builder.add_64bit_uint(data)
+            elif dtype == registerDataType.INT16:
+                builder.add_16bit_int(data)
+            elif (dtype == registerDataType.FLOAT32 or
+                  dtype == registerDataType.SEFLOAT):
+                builder.add_32bit_float(data)
+            elif dtype == registerDataType.STRING:
+                builder.add_string(data)
+            else:
+                raise NotImplementedError(dtype)
+
+        except NotImplementedError:
+            raise
+
+        return builder.to_registers()
 
     def _decode_value(self, data, length, dtype, vtype):
         try:
