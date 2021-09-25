@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import sys
+sys.path.insert(0, "C:\gitHubClones\modbus\solaredge_modbus\src")
+
 import argparse
 import json
 
@@ -76,3 +79,7 @@ if __name__ == "__main__":
         print(f"\tDC Current: {(values['current_dc'] * (10 ** values['current_dc_scale'])):.2f}{inverter.registers['current_dc'][6]}")
         print(f"\tDC Voltage: {(values['voltage_dc'] * (10 ** values['voltage_dc_scale'])):.2f}{inverter.registers['voltage_dc'][6]}")
         print(f"\tDC Power: {(values['power_dc'] * (10 ** values['power_dc_scale'])):.2f}{inverter.registers['power_dc'][6]}")
+        for key, params in values['meters']['Meter1'].items():
+            print(key,params)
+       
+
