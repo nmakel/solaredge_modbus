@@ -405,13 +405,17 @@ class Inverter(SolarEdge):
         super().__init__(*args, **kwargs)
 
         self.registers = {
+           # Name            Address,length, Attribute, 	 Type			  target, descrip,   Unit, 
+            "C_SunS_ID":    (40000,   2, registerType.HOLDING, registerDataType.STRING, str, "C_SunS_ID", "Protokoll ID", 1),
+            "C_SunS_DID":   (40002,   1, registerType.HOLDING, registerDataType.UINT16, int, "C_SunS_DID", "", 1),
+            "C_SunSpec_Length":(40003,  1, registerType.HOLDING, registerDataType.UINT16, int, "C_SunSpec_Length", "Words 16 Bit", 1),
             "c_manufacturer": (0x9c44, 16, registerType.HOLDING, registerDataType.STRING, str, "Manufacturer", "", 1),
             "c_model": (0x9c54, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", "", 1),
             "c_version": (0x9c6c, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", "", 1),
             "c_serialnumber": (0x9c74, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", "", 1),
             "c_deviceaddress": (0x9c84, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", "", 1),
             "c_sunspec_did": (0x9c85, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", C_SUNSPEC_DID_MAP, 2),
-
+            "c_sunspec_length":(0x9c86,  1, registerType.HOLDING, registerDataType.UINT16, int, "Length", "Words 16 Bit", 1),
             "current": (0x9c87, 1, registerType.HOLDING, registerDataType.UINT16, int, "Current", "A", 2),
             "p1_current": (0x9c88, 1, registerType.HOLDING, registerDataType.UINT16, int, "P1 Current", "A", 2),
             "p2_current": (0x9c89, 1, registerType.HOLDING, registerDataType.UINT16, int, "P2 Current", "A", 2),
@@ -493,7 +497,7 @@ class Meter(SolarEdge):
         super().__init__(*args, **kwargs)
 
         self.offset = METER_REGISTER_OFFSETS[offset]
-        self.registers = {
+        self.registers = {            
             "c_manufacturer": (0x9cbb + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Manufacturer", "", 1),
             "c_model": (0x9ccb + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", "", 1),
             "c_option": (0x9cdb + self.offset, 8, registerType.HOLDING, registerDataType.STRING, str, "Mode", "", 1),
@@ -501,6 +505,7 @@ class Meter(SolarEdge):
             "c_serialnumber": (0x9ceb + self.offset, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", "", 1),
             "c_deviceaddress": (0x9cfb + self.offset, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", "", 1),
             "c_sunspec_did": (0x9cfc + self.offset, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", C_SUNSPEC_DID_MAP, 2),
+            "c_sunspec_length":(0x9cfd+ self.offset,  1, registerType.HOLDING, registerDataType.UINT16, int, "Length", "Words 16 Bit", 1),
 
             "current": (0x9cfe + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "Current", "A", 2),
             "p1_current": (0x9cff + self.offset, 1, registerType.HOLDING, registerDataType.INT16, int, "P1 Current", "A", 2),
@@ -581,8 +586,9 @@ class Meter(SolarEdge):
             "p1_export_energy_reactive_q4": (0x9d5e + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P1 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
             "p2_export_energy_reactive_q4": (0x9d60 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P2 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
             "p3_export_energy_reactive_q4": (0x9d62 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "P3 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
-            "energy_reactive_scale": (0x9d64 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Reactive) Scale Factor", "", 3)
-        }
+            "energy_reactive_scale": (0x9d64 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Reactive) Scale Factor", "", 3),
+            "events": (0x9d65 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "flags", "Event", 3),
+       }
 
 
 class Battery(SolarEdge):

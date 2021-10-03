@@ -1,0 +1,5 @@
+Victron erwartet folgenden Zähler
+
+EM24DINAV23XE1X 1648 (0x670)
+
+Er muss im Register 0B de wert 1648 zurückgeben
