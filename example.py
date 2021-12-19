@@ -54,17 +54,17 @@ if __name__ == "__main__":
         print(f"\tCurrent: {(values['current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['current'][6]}")
 
         if values['c_sunspec_did'] is solaredge_modbus.sunspecDID.THREE_PHASE_INVERTER.value:
-            print(f"\tPhase 1 Current: {(values['p1_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p1_current'][6]}")
-            print(f"\tPhase 2 Current: {(values['p2_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p2_current'][6]}")
-            print(f"\tPhase 3 Current: {(values['p3_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p3_current'][6]}")
-            print(f"\tPhase 1 voltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p1_voltage'][6]}")
-            print(f"\tPhase 2 voltage: {(values['p2_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p2_voltage'][6]}")
-            print(f"\tPhase 3 voltage: {(values['p3_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p3_voltage'][6]}")
-            print(f"\tPhase 1-N voltage: {(values['p1n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p1n_voltage'][6]}")
-            print(f"\tPhase 2-N voltage: {(values['p2n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p2n_voltage'][6]}")
-            print(f"\tPhase 3-N voltage: {(values['p3n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p3n_voltage'][6]}")
+            print(f"\tPhase 1 Current: {(values['l1_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['l1_current'][6]}")
+            print(f"\tPhase 2 Current: {(values['l2_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['l2_current'][6]}")
+            print(f"\tPhase 3 Current: {(values['l3_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['l3_current'][6]}")
+            print(f"\tPhase 1 voltage: {(values['l1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l1_voltage'][6]}")
+            print(f"\tPhase 2 voltage: {(values['l2_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l2_voltage'][6]}")
+            print(f"\tPhase 3 voltage: {(values['l3_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l3_voltage'][6]}")
+            print(f"\tPhase 1-N voltage: {(values['l1n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l1n_voltage'][6]}")
+            print(f"\tPhase 2-N voltage: {(values['l2n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l2n_voltage'][6]}")
+            print(f"\tPhase 3-N voltage: {(values['l3n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l3n_voltage'][6]}")
         else:
-            print(f"\tVoltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p1_voltage'][6]}")
+            print(f"\tVoltage: {(values['l1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l1_voltage'][6]}")
 
         print(f"\tFrequency: {(values['frequency'] * (10 ** values['frequency_scale'])):.2f}{inverter.registers['frequency'][6]}")
         print(f"\tPower: {(values['power_ac'] * (10 ** values['power_ac_scale'])):.2f}{inverter.registers['power_ac'][6]}")
