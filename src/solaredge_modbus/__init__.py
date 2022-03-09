@@ -405,17 +405,17 @@ class Inverter(SolarEdge):
         super().__init__(*args, **kwargs)
 
         self.registers = {
-            # name, address, length, register, type, target type, description, unit, batch 
+            # name, address, length, register, type, target type, description, unit, batch
             "c_id": (0x9c40, 2, registerType.HOLDING, registerDataType.STRING, str, "SunSpec ID", "", 1),
             "c_did": (0x9c42, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", "", 1),
-            "c_length":(0x9c42, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec Length", "16Bit Words", 1),
+            "c_length": (0x9c42, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec Length", "16Bit Words", 1),
             "c_manufacturer": (0x9c44, 16, registerType.HOLDING, registerDataType.STRING, str, "Manufacturer", "", 1),
             "c_model": (0x9c54, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", "", 1),
             "c_version": (0x9c6c, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", "", 1),
             "c_serialnumber": (0x9c74, 16, registerType.HOLDING, registerDataType.STRING, str, "Serial", "", 1),
             "c_deviceaddress": (0x9c84, 1, registerType.HOLDING, registerDataType.UINT16, int, "Modbus ID", "", 1),
             "c_sunspec_did": (0x9c85, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", C_SUNSPEC_DID_MAP, 2),
-            "c_sunspec_length":(0x9c86,  1, registerType.HOLDING, registerDataType.UINT16, int, "Length", "16Bit Words", 2),
+            "c_sunspec_length": (0x9c86, 1, registerType.HOLDING, registerDataType.UINT16, int, "Length", "16Bit Words", 2),
 
             "current": (0x9c87, 1, registerType.HOLDING, registerDataType.UINT16, int, "Current", "A", 2),
             "l1_current": (0x9c88, 1, registerType.HOLDING, registerDataType.UINT16, int, "L1 Current", "A", 2),
