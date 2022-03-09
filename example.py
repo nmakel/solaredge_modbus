@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 
-import sys
-sys.path.insert(0, "C:\gitHubClones\modbus\solaredge_modbus\src")
-
 import argparse
 import json
-import time
 
 import solaredge_modbus
 
@@ -26,69 +22,57 @@ if __name__ == "__main__":
         unit=args.unit
     )
 
-    while(1):
-        values = {}
-        values = inverter.read_all()
-        meters = inverter.meters()
-        batteries = inverter.batteries()
-        values["meters"] = {}
-        values["batteries"] = {}
+    values = {}
+    values = inverter.read_all()
+    meters = inverter.meters()
+    batteries = inverter.batteries()
+    values["meters"] = {}
+    values["batteries"] = {}
 
-        print("values read:")
-        for key, value in values.items():
-            print(f"{key} {value}")
+    for meter, params in meters.items():
+        meter_values = params.read_all()
+        values["meters"][meter] = meter_values
 
+    for battery, params in batteries.items():
+        battery_values = params.read_all()
+        values["batteries"][battery] = battery_values
 
+    if args.json:
+        print(json.dumps(values, indent=4))
+    else:
+        print(f"{inverter}:")
+        print("\nRegisters:")
 
-        for meter, params in meters.items():
-            meter_values = params.read_all()
-            values["meters"][meter] = meter_values
+        print(f"\tManufacturer: {values['c_manufacturer']}")
+        print(f"\tModel: {values['c_model']}")
+        print(f"\tType: {solaredge_modbus.C_SUNSPEC_DID_MAP[str(values['c_sunspec_did'])]}")
+        print(f"\tVersion: {values['c_version']}")
+        print(f"\tSerial: {values['c_serialnumber']}")
+        print(f"\tStatus: {solaredge_modbus.INVERTER_STATUS_MAP[values['status']]}")
+        print(f"\tTemperature: {(values['temperature'] * (10 ** values['temperature_scale'])):.2f}{inverter.registers['temperature'][6]}")
 
-        for battery, params in batteries.items():
-            battery_values = params.read_all()
-            values["batteries"][battery] = battery_values
+        print(f"\tCurrent: {(values['current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['current'][6]}")
 
-        if args.json:
-            print(json.dumps(values, indent=4))
+        if values['c_sunspec_did'] is solaredge_modbus.sunspecDID.THREE_PHASE_INVERTER.value:
+            print(f"\tPhase 1 Current: {(values['l1_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['l1_current'][6]}")
+            print(f"\tPhase 2 Current: {(values['l2_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['l2_current'][6]}")
+            print(f"\tPhase 3 Current: {(values['l3_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['l3_current'][6]}")
+            print(f"\tPhase 1 voltage: {(values['l1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l1_voltage'][6]}")
+            print(f"\tPhase 2 voltage: {(values['l2_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l2_voltage'][6]}")
+            print(f"\tPhase 3 voltage: {(values['l3_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l3_voltage'][6]}")
+            print(f"\tPhase 1-N voltage: {(values['l1n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l1n_voltage'][6]}")
+            print(f"\tPhase 2-N voltage: {(values['l2n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l2n_voltage'][6]}")
+            print(f"\tPhase 3-N voltage: {(values['l3n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l3n_voltage'][6]}")
         else:
-            print(f"{inverter}:")
-            print("\nRegisters:")
+            print(f"\tVoltage: {(values['l1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['l1_voltage'][6]}")
 
-            print(f"\tManufacturer: {values['c_manufacturer']}")
-            print(f"\tModel: {values['c_model']}")
-            print(f"\tType: {solaredge_modbus.C_SUNSPEC_DID_MAP[str(values['c_sunspec_did'])]}")
-            print(f"\tVersion: {values['c_version']}")
-            print(f"\tSerial: {values['c_serialnumber']}")
-            print(f"\tStatus: {solaredge_modbus.INVERTER_STATUS_MAP[values['status']]}")
-            print(f"\tTemperature: {(values['temperature'] * (10 ** values['temperature_scale'])):.2f}{inverter.registers['temperature'][6]}")
+        print(f"\tFrequency: {(values['frequency'] * (10 ** values['frequency_scale'])):.2f}{inverter.registers['frequency'][6]}")
+        print(f"\tPower: {(values['power_ac'] * (10 ** values['power_ac_scale'])):.2f}{inverter.registers['power_ac'][6]}")
+        print(f"\tPower (Apparent): {(values['power_apparent'] * (10 ** values['power_apparent_scale'])):.2f}{inverter.registers['power_apparent'][6]}")
+        print(f"\tPower (Reactive): {(values['power_reactive'] * (10 ** values['power_reactive_scale'])):.2f}{inverter.registers['power_reactive'][6]}")
+        print(f"\tPower Factor: {(values['power_factor'] * (10 ** values['power_factor_scale'])):.2f}{inverter.registers['power_factor'][6]}")
+        print(f"\tTotal Energy: {(values['energy_total'] * (10 ** values['energy_total_scale']))}{inverter.registers['energy_total'][6]}")
 
-            print(f"\tCurrent: {(values['current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['current'][6]}")
-
-            if values['c_sunspec_did'] is solaredge_modbus.sunspecDID.THREE_PHASE_INVERTER.value:
-                print(f"\tPhase 1 Current: {(values['p1_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p1_current'][6]}")
-                print(f"\tPhase 2 Current: {(values['p2_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p2_current'][6]}")
-                print(f"\tPhase 3 Current: {(values['p3_current'] * (10 ** values['current_scale'])):.2f}{inverter.registers['p3_current'][6]}")
-                print(f"\tPhase 1 voltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p1_voltage'][6]}")
-                print(f"\tPhase 2 voltage: {(values['p2_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p2_voltage'][6]}")
-                print(f"\tPhase 3 voltage: {(values['p3_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p3_voltage'][6]}")
-                print(f"\tPhase 1-N voltage: {(values['p1n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p1n_voltage'][6]}")
-                print(f"\tPhase 2-N voltage: {(values['p2n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p2n_voltage'][6]}")
-                print(f"\tPhase 3-N voltage: {(values['p3n_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p3n_voltage'][6]}")
-            else:
-                print(f"\tVoltage: {(values['p1_voltage'] * (10 ** values['voltage_scale'])):.2f}{inverter.registers['p1_voltage'][6]}")
-
-            print(f"\tFrequency: {(values['frequency'] * (10 ** values['frequency_scale'])):.2f}{inverter.registers['frequency'][6]}")
-            print(f"\tPower: {(values['power_ac'] * (10 ** values['power_ac_scale'])):.2f}{inverter.registers['power_ac'][6]}")
-            print(f"\tPower (Apparent): {(values['power_apparent'] * (10 ** values['power_apparent_scale'])):.2f}{inverter.registers['power_apparent'][6]}")
-            print(f"\tPower (Reactive): {(values['power_reactive'] * (10 ** values['power_reactive_scale'])):.2f}{inverter.registers['power_reactive'][6]}")
-            print(f"\tPower Factor: {(values['power_factor'] * (10 ** values['power_factor_scale'])):.2f}{inverter.registers['power_factor'][6]}")
-            print(f"\tTotal Energy: {(values['energy_total'] * (10 ** values['energy_total_scale']))}{inverter.registers['energy_total'][6]}")
-
-            print(f"\tDC Current: {(values['current_dc'] * (10 ** values['current_dc_scale'])):.2f}{inverter.registers['current_dc'][6]}")
-            print(f"\tDC Voltage: {(values['voltage_dc'] * (10 ** values['voltage_dc_scale'])):.2f}{inverter.registers['voltage_dc'][6]}")
-            print(f"\tDC Power: {(values['power_dc'] * (10 ** values['power_dc_scale'])):.2f}{inverter.registers['power_dc'][6]}")
-            for key, params in values['meters']['Meter1'].items():
-                print(key,params)
-            time.sleep(0.3)
-       
-
+        print(f"\tDC Current: {(values['current_dc'] * (10 ** values['current_dc_scale'])):.2f}{inverter.registers['current_dc'][6]}")
+        print(f"\tDC Voltage: {(values['voltage_dc'] * (10 ** values['voltage_dc_scale'])):.2f}{inverter.registers['voltage_dc'][6]}")
+        print(f"\tDC Power: {(values['power_dc'] * (10 ** values['power_dc_scale'])):.2f}{inverter.registers['power_dc'][6]}")
