@@ -4,8 +4,8 @@ import time
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadBuilder
 from pymodbus.payload import BinaryPayloadDecoder
-from pymodbus.client.sync import ModbusTcpClient
-from pymodbus.client.sync import ModbusSerialClient
+from pymodbus.client import ModbusTcpClient
+from pymodbus.client import ModbusSerialClient
 from pymodbus.register_read_message import ReadHoldingRegistersResponse
 
 
@@ -221,7 +221,7 @@ class SolarEdge:
                 time.sleep(0.1)
                 continue
 
-            result = self.client.read_holding_registers(address, length, unit=self.unit)
+            result = self.client.read_holding_registers(address, length, slave=self.unit)
 
             if not isinstance(result, ReadHoldingRegistersResponse):
                 continue
@@ -233,7 +233,7 @@ class SolarEdge:
         return None
 
     def _write_holding_register(self, address, value):
-        return self.client.write_registers(address=address, values=value, unit=self.unit)
+        return self.client.write_registers(address=address, values=value, slave=self.unit)
 
     def _encode_value(self, data, dtype):
         builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=self.wordorder)
