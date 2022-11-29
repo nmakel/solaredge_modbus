@@ -158,7 +158,11 @@ class SolarEdge:
             self.mode = parent.mode
             self.timeout = parent.timeout
             self.retries = parent.retries
-            self.unit = parent.unit
+
+            if unit:
+                self.unit = unit
+            else:
+                self.unit = parent.unit
 
             if self.mode is connectionType.RTU:
                 self.device = parent.device
