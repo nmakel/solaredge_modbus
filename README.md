@@ -105,8 +105,7 @@ Passing `--json` returns:
 
 Note that if kWh meters or batteries are connected to your inverter, these will also be presented in the JSON output.
 
-A second script, `example_influxdb.py` provides an example InfluxDB writer. It connects to an inverter over Modbus TCP, and writes inverter, battery and meter values to an InfluxDB every second.
-
+A second script, `example_influxdb.py` provides an example InfluxDB v1 writer. It connects to an inverter over Modbus TCP, and writes inverter, battery and meter values to an InfluxDB every second.
 
 ```
 usage: example_influxdb.py [-h] [--timeout TIMEOUT] [--unit UNIT] [--interval INTERVAL] [--influx_host INFLUX_HOST] [--influx_port INFLUX_PORT] [--influx_db INFLUX_DB]
@@ -132,6 +131,32 @@ optional arguments:
                         InfluxDB username
   --influx_pass INFLUX_PASS
                         InfluxDB password
+```
+
+A third script, `example_influxdb_v2.py` provides a similar example InfluxDB v2 writer.
+
+```
+usage: example_influxdb_v2.py [-h] [--timeout TIMEOUT] [--unit UNIT] [--interval INTERVAL] [--influx_url INFLUX_URL]
+                              [--influx_org INFLUX_ORG] [--influx_bucket INFLUX_BUCKET] [--influx_token INFLUX_TOKEN]
+                              host port
+
+positional arguments:
+  host                  Modbus TCP address
+  port                  Modbus TCP port
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --timeout TIMEOUT     Connection timeout
+  --unit UNIT           Modbus device address
+  --interval INTERVAL   Update interval
+  --influx_url INFLUX_URL
+                        InfluxDB URL
+  --influx_org INFLUX_ORG
+                        InfluxDB organisation
+  --influx_bucket INFLUX_BUCKET
+                        InfluxDB bucket
+  --influx_token INFLUX_TOKEN
+                        InfluxDB token
 ```
 
 ### Connecting
