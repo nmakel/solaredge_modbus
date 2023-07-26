@@ -379,3 +379,22 @@ There are two points to consider when doing this. You will need to manually pass
 ## Contributing
 
 Contributions are more than welcome.
+
+## Using Docker to install and run solaredge_modbus
+
+You can build a Docker image and run your scripts inside:
+
+```sh
+docker build -t solaredge_modbus .
+```
+
+You can then execute `example.py` as follows:
+```sh
+docker run --rm -it solaredge_modbus <host> <port>
+```
+You can explore the image or just use it to run other scripts by overriding the entrypoint to the docker image and mounting the outside directory over the `/app/` directory:
+```sh
+docker run --rm -it -v $PWD:/app --entrypoint /bin/bash solaredge_modbus
+
+python3 examply.py <host> <port>
+```
