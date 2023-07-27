@@ -3,7 +3,7 @@
 import argparse
 import json
 
-import paho.mqtt.client as mqtt  # pip install paho-mqtt
+import paho.mqtt.publish as publish  # pip install paho-mqtt
 
 import solaredge_modbus
 
@@ -31,7 +31,8 @@ if __name__ == "__main__":
     argparser.add_argument("--timeout", type=int, default=1, help="Connection timeout")
     argparser.add_argument("--unit", type=int, default=1, help="Modbus device address")
     argparser.add_argument("--mqttHost", type=str, default="localhost", help="hostname or IP address of the remote broker")
-    argparser.add_argument("--mqttTopic", type=str, default="tele/solarEdge/allData", help="the topic that the message should be published on")
+    argparser.add_argument("--mqttPort", type=int, default=1883, help="port of the remote broker")
+    argparser.add_argument("--mqttBaseTopic", type=str, default="solaredge", help="the topic that the message should be published on")
     args = argparser.parse_args()
 
     inverter = solaredge_modbus.Inverter(
@@ -55,9 +56,28 @@ if __name__ == "__main__":
     for battery, params in batteries.items():
         battery_values = params.read_all()
         values["batteries"][battery] = battery_values
+    
+    production_power = (values['power_ac'] * (10 ** values['power_ac_scale']))
+    export_power = values['meters']['Meter1']['power'] * (10 ** values['meters']['Meter1']['power_scale'])
+    consumption_power = production_power - export_power
+
+    energy_total = values['energy_total'] * (10 ** values['energy_total_scale'])
+    import_total = values['meters']['Meter1']['import_energy_active'] * (10 ** values['meters']['Meter1']['energy_active_scale'])
+    export_total = values['meters']['Meter1']['export_energy_active'] * (10 ** values['meters']['Meter1']['energy_active_scale'])
+    self_consumption_total = energy_total - export_total
+
 
     # MQTT
-    mqttc = mqtt.Client("SolarEdge2Mqtt")
-    #mqttc.username_pw_set(args.username, args.password)
-    mqttc.connect(args.mqttHost)
-    mqttc.publish(args.mqttTopic, json.dumps(values))
+    msgs = [
+        # raw json data
+        {'topic': f"{args.mqttBaseTopic}/json", 'payload':json.dumps(values)},
+        # power
+        {'topic': f"{args.mqttBaseTopic}/power/production", 'payload':production_power},
+        {'topic': f"{args.mqttBaseTopic}/power/export", 'payload':export_power},
+        {'topic': f"{args.mqttBaseTopic}/power/consumption", 'payload':consumption_power},
+        # meters
+        {'topic': f"{args.mqttBaseTopic}/meter/energy_total", 'payload':energy_total},
+        {'topic': f"{args.mqttBaseTopic}/meter/import_energy_active", 'payload':import_total},
+        {'topic': f"{args.mqttBaseTopic}/meter/export_energy_active", 'payload':export_total},
+    ]
+    publish.multiple(msgs, hostname=args.mqttHost, port=args.mqttPort, client_id="", will=None, auth=None, tls=None, transport="tcp")
