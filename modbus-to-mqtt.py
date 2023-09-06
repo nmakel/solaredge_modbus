@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import time
 
 import paho.mqtt.publish as publish  # pip install paho-mqtt
 
@@ -23,18 +24,7 @@ Subscribtion example:
 
 """
 
-
-if __name__ == "__main__":
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument("host", type=str, help="Modbus TCP address")
-    argparser.add_argument("port", type=int, help="Modbus TCP port")
-    argparser.add_argument("--timeout", type=int, default=1, help="Connection timeout")
-    argparser.add_argument("--unit", type=int, default=1, help="Modbus device address")
-    argparser.add_argument("--mqttHost", type=str, default="localhost", help="hostname or IP address of the remote broker")
-    argparser.add_argument("--mqttPort", type=int, default=1883, help="port of the remote broker")
-    argparser.add_argument("--mqttBaseTopic", type=str, default="solaredge", help="the topic that the message should be published on")
-    args = argparser.parse_args()
-
+def do_loop(args):
     inverter = solaredge_modbus.Inverter(
         host=args.host,
         port=args.port,
@@ -56,16 +46,18 @@ if __name__ == "__main__":
     for battery, params in batteries.items():
         battery_values = params.read_all()
         values["batteries"][battery] = battery_values
+    connected = inverter.connected()
+    inverter.disconnect()
     
-    production_power = (values['power_ac'] * (10 ** values['power_ac_scale']))
-    export_power = values['meters']['Meter1']['power'] * (10 ** values['meters']['Meter1']['power_scale'])
-    consumption_power = production_power - export_power
+    if connected:
+        production_power = (values['power_ac'] * (10 ** values['power_ac_scale']))
+        export_power = values['meters']['Meter1']['power'] * (10 ** values['meters']['Meter1']['power_scale'])
+        consumption_power = production_power - export_power
 
-    energy_total = values['energy_total'] * (10 ** values['energy_total_scale'])
-    import_total = values['meters']['Meter1']['import_energy_active'] * (10 ** values['meters']['Meter1']['energy_active_scale'])
-    export_total = values['meters']['Meter1']['export_energy_active'] * (10 ** values['meters']['Meter1']['energy_active_scale'])
-    self_consumption_total = energy_total - export_total
-
+        energy_total = values['energy_total'] * (10 ** values['energy_total_scale'])
+        import_total = values['meters']['Meter1']['import_energy_active'] * (10 ** values['meters']['Meter1']['energy_active_scale'])
+        export_total = values['meters']['Meter1']['export_energy_active'] * (10 ** values['meters']['Meter1']['energy_active_scale'])
+        self_consumption_total = energy_total - export_total
 
     # MQTT
     msgs = [
@@ -81,3 +73,23 @@ if __name__ == "__main__":
         {'topic': f"{args.mqttBaseTopic}/meter/export_energy_active", 'payload':export_total},
     ]
     publish.multiple(msgs, hostname=args.mqttHost, port=args.mqttPort, client_id="", will=None, auth=None, tls=None, transport="tcp")
+
+if __name__ == "__main__":
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("host", type=str, help="Modbus TCP address")
+    argparser.add_argument("port", type=int, help="Modbus TCP port")
+    argparser.add_argument("--timeout", type=int, default=1, help="Connection timeout")
+    argparser.add_argument("--unit", type=int, default=1, help="Modbus device address")
+    argparser.add_argument("--mqttHost", type=str, default="localhost", help="hostname or IP address of the remote broker")
+    argparser.add_argument("--mqttPort", type=int, default=1883, help="port of the remote broker")
+    argparser.add_argument("--mqttBaseTopic", type=str, default="solaredge", help="the topic that the message should be published on")
+    argparser.add_argument("--loop", action="store_true")
+    argparser.add_argument("--loop_delay", type=int, default=3)
+    args = argparser.parse_args()
+
+    while True:
+        do_loop(args)
+        if args.loop:
+            time.sleep(args.loop_delay)
+        else:
+            break
