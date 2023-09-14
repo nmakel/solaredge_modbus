@@ -137,5 +137,5 @@ if __name__ == "__main__":
 
             json_body.append(battery_data)
 
-        influx.write(args.influx_db, org, json_body)
+        influx.write(args.influx_bucket, args.influx_org, json_body)
         time.sleep(args.interval)
