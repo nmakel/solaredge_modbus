@@ -6,4 +6,7 @@ COPY . /app
 WORKDIR /app
 RUN python3 setup.py install
 
-ENTRYPOINT [ "/usr/local/bin/python3", "example.py" ]
+#Install requirements
+RUN pip3 install -r requirements.txt
+
+ENTRYPOINT [ "/usr/local/bin/python3", "data_server.py" ]
