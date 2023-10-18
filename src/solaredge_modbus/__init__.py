@@ -160,7 +160,7 @@ class SolarEdge:
     stopbits = 1
     parity = "N"
     baud = 115200
-    wordorder = Endian.Big
+    wordorder = Endian.BIG
 
     def __init__(
         self, host=False, port=False,
@@ -247,7 +247,7 @@ class SolarEdge:
             if len(result.registers) != length:
                 continue
 
-            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=self.wordorder)
+            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.BIG, wordorder=self.wordorder)
 
         return None
 
@@ -255,7 +255,7 @@ class SolarEdge:
         return self.client.write_registers(address=address, values=value, slave=self.unit)
 
     def _encode_value(self, data, dtype):
-        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=self.wordorder)
+        builder = BinaryPayloadBuilder(byteorder=Endian.BIG, wordorder=self.wordorder)
 
         try:
             if dtype == registerDataType.INT16:
@@ -425,7 +425,7 @@ class Inverter(SolarEdge):
 
     def __init__(self, *args, **kwargs):
         self.model = "Inverter"
-        self.wordorder = Endian.Big
+        self.wordorder = Endian.BIG
 
         super().__init__(*args, **kwargs)
 
@@ -530,7 +530,7 @@ class Meter(SolarEdge):
 
     def __init__(self, offset=False, *args, **kwargs):
         self.model = f"Meter{offset + 1}"
-        self.wordorder = Endian.Big
+        self.wordorder = Endian.BIG
 
         super().__init__(*args, **kwargs)
 
