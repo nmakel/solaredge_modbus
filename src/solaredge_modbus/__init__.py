@@ -160,7 +160,7 @@ class SolarEdge:
     stopbits = 1
     parity = "N"
     baud = 115200
-    wordorder = Endian.Big
+    wordorder = Endian.BIG
 
     def __init__(
         self, host=False, port=False,
@@ -247,7 +247,7 @@ class SolarEdge:
             if len(result.registers) != length:
                 continue
 
-            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.Big, wordorder=self.wordorder)
+            return BinaryPayloadDecoder.fromRegisters(result.registers, byteorder=Endian.BIG, wordorder=self.wordorder)
 
         return None
 
@@ -255,7 +255,7 @@ class SolarEdge:
         return self.client.write_registers(address=address, values=value, slave=self.unit)
 
     def _encode_value(self, data, dtype):
-        builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=self.wordorder)
+        builder = BinaryPayloadBuilder(byteorder=Endian.BIG, wordorder=self.wordorder)
 
         try:
             if dtype == registerDataType.INT16:
@@ -425,7 +425,7 @@ class Inverter(SolarEdge):
 
     def __init__(self, *args, **kwargs):
         self.model = "Inverter"
-        self.wordorder = Endian.Big
+        self.wordorder = Endian.BIG
 
         super().__init__(*args, **kwargs)
 
@@ -433,7 +433,7 @@ class Inverter(SolarEdge):
             # name, address, length, register, type, target type, description, unit, batch
             "c_id": (0x9c40, 2, registerType.HOLDING, registerDataType.STRING, str, "SunSpec ID", "", 1),
             "c_did": (0x9c42, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec DID", "", 1),
-            "c_length": (0x9c42, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec Length", "16Bit Words", 1),
+            "c_length": (0x9c43, 1, registerType.HOLDING, registerDataType.UINT16, int, "SunSpec Length", "16Bit Words", 1),
             "c_manufacturer": (0x9c44, 16, registerType.HOLDING, registerDataType.STRING, str, "Manufacturer", "", 1),
             "c_model": (0x9c54, 16, registerType.HOLDING, registerDataType.STRING, str, "Model", "", 1),
             "c_version": (0x9c6c, 8, registerType.HOLDING, registerDataType.STRING, str, "Version", "", 1),
@@ -530,7 +530,7 @@ class Meter(SolarEdge):
 
     def __init__(self, offset=False, *args, **kwargs):
         self.model = f"Meter{offset + 1}"
-        self.wordorder = Endian.Big
+        self.wordorder = Endian.BIG
 
         super().__init__(*args, **kwargs)
 
@@ -632,7 +632,7 @@ class Battery(SolarEdge):
 
     def __init__(self, offset=False, *args, **kwargs):
         self.model = f"Battery{offset + 1}"
-        self.wordorder = Endian.Little
+        self.wordorder = Endian.LITTLE
 
         super().__init__(*args, **kwargs)
 
