@@ -150,7 +150,8 @@ METER_REGISTER_OFFSETS = [
 
 BATTERY_REGISTER_OFFSETS = [
     0x0,
-    0x100
+    0x100,
+    0x300
 ]
 
 
@@ -512,7 +513,8 @@ class Inverter(SolarEdge):
 
         self.battery_dids = [
             (0xe140, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
-            (0xe240, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
+            (0xe240, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1),
+            (0xe340, 1, registerType.HOLDING, registerDataType.UINT16, int, "", "", 1)
         ]
 
     def meters(self):
