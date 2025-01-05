@@ -6,7 +6,7 @@ from pymodbus.payload import BinaryPayloadBuilder
 from pymodbus.payload import BinaryPayloadDecoder
 from pymodbus.client import ModbusTcpClient
 from pymodbus.client import ModbusSerialClient
-from pymodbus.register_read_message import ReadHoldingRegistersResponse
+from pymodbus.pdu.register_message import ReadHoldingRegistersResponse
 
 
 RETRIES = 3
@@ -241,7 +241,7 @@ class SolarEdge:
                 time.sleep(0.1)
                 continue
 
-            result = self.client.read_holding_registers(address, length, slave=self.unit)
+            result = self.client.read_holding_registers(address, count=length, slave=self.unit)
 
             if not isinstance(result, ReadHoldingRegistersResponse):
                 continue
