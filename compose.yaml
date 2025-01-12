@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  solaredge-modbus-exporter:
+    #image: your-container-registry/solaredge-modbus:latest  # Replace with your image details
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"  # Map container port 5000 to host port 5000
+    environment:
+      MODBUS_HOST: "PLACE_YOUR_IP_HERE"  # Replace with your Modbus host
+      MODBUS_PORT: "1502"  # Replace with your Modbus port
+      MODBUS_TIMEOUT: "1"  # Replace with your Modbus timeout
+      MODBUS_UNIT: "1"  # Replace with your Modbus unit
+    restart: always
