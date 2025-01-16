@@ -200,6 +200,8 @@ class SolarEdge:
         timeout=TIMEOUT, retries=RETRIES, unit=UNIT,
         parent=False
     ):
+        self.little_endian_registers = set()
+
         if parent:
             self.client = parent.client
             self.mode = parent.mode
@@ -266,8 +268,7 @@ class SolarEdge:
 
     def _read_holding_registers(self, address, length):
         # Check if the register needs little endian
-        wordorder = Endian.LITTLE
-        self.wordorder
+        wordorder = Endian.LITTLE if address in self.little_endian_registers else self.wordorder
 
         for i in range(self.retries):
             if not self.connected():
@@ -287,8 +288,7 @@ class SolarEdge:
 
     def _write_holding_register(self, address, value, dtype):
         # Determine byte order based on address
-        wordorder = Endian.LITTLE
-        self.wordorder
+        wordorder = Endian.LITTLE if address in self.little_endian_registers else self.wordorder
 
         # Use dtype and wordorder to encode the value properly
         encoded_value = self._encode_value(value, dtype, wordorder)
@@ -466,6 +466,22 @@ class Inverter(SolarEdge):
 
         super().__init__(*args, **kwargs)
 
+        # A dictionary to hold registers that require different wordorder
+        self.little_endian_registers = {
+            0xf700,  # export_control_mode
+            0xf701,  # export_control_limit_mode
+            0xf702,  # export_control_site_limit
+            0xe004,  # storage_control_mode
+            0xe005,  # storage_ac_charge_policy
+            0xe006,  # storage_ac_charge_limit
+            0xe008,  # storage_backup_reserved_setting
+            0xe00a,  # storage_default_mode
+            0xe00B,  # rc_cmd_timeout
+            0xe00d,  # rc_cmd_mode
+            0xe00e,  # rc_charge_limit
+            0xe010   # rc_discharge_limit
+        }
+
         self.registers = {
             # name, address, length, register, type, target type, description, unit, batch
             "c_id": (0x9c40, 2, registerType.HOLDING, registerDataType.STRING, str, "SunSpec ID", "", 1),
@@ -542,7 +558,7 @@ class Inverter(SolarEdge):
 
             "storage_control_mode": (0xe004, 1, registerType.HOLDING, registerDataType.UINT16, int, "Storage Control Mode", "", 6),
             "storage_ac_charge_policy": (0xe005, 1, registerType.HOLDING, registerDataType.UINT16, int, "Storage AC Charge Policy", "", 6),
-            "storage_ac_charge_limit": (0xe006, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Storage AC Charge Limit", "", 6),
+            "storage_ac_charge_limit": (0xe006, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Storage AC Charge Limit", "W", 6),
             "storage_backup_reserved_setting": (0xe008, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Storage Backup Reserved Setting", "%", 6),
             "storage_default_mode": (0xe00a, 1, registerType.HOLDING, registerDataType.UINT16, int, "Storage Charge/Discharge Default Mode", "", 6),
             "rc_cmd_timeout": (0xe00b, 2, registerType.HOLDING, registerDataType.UINT32, int, "Remote Control Command Timeout", "s", 6),
