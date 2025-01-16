@@ -558,10 +558,10 @@ class Inverter(SolarEdge):
 
             "storage_control_mode": (0xe004, 1, registerType.HOLDING, registerDataType.UINT16, int, "Storage Control Mode", "", 6),
             "storage_ac_charge_policy": (0xe005, 1, registerType.HOLDING, registerDataType.UINT16, int, "Storage AC Charge Policy", "", 6),
-            "storage_ac_charge_limit": (0xe006, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Storage AC Charge Limit", "", 6),
+            "storage_ac_charge_limit": (0xe006, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Storage AC Charge Limit", "W", 6),
             "storage_backup_reserved_setting": (0xe008, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Storage Backup Reserved Setting", "%", 6),
             "storage_default_mode": (0xe00a, 1, registerType.HOLDING, registerDataType.UINT16, int, "Storage Charge/Discharge Default Mode", "", 6),
-            "rc_cmd_timeout": (0xe00B, 2, registerType.HOLDING, registerDataType.UINT32, int, "Remote Control Command Timeout", "s", 6),
+            "rc_cmd_timeout": (0xe00b, 2, registerType.HOLDING, registerDataType.UINT32, int, "Remote Control Command Timeout", "s", 6),
             "rc_cmd_mode": (0xe00d, 1, registerType.HOLDING, registerDataType.UINT16, int, "Remote Control Command Mode", "", 6),
             "rc_charge_limit": (0xe00e, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Remote Control Command Charge Limit", "W", 6),
             "rc_discharge_limit": (0xe010, 2, registerType.HOLDING, registerDataType.FLOAT32, float, "Remote Control Command Discharge Limit", "W", 6)
@@ -689,31 +689,6 @@ class Meter(SolarEdge):
             "l2_export_energy_reactive_q4": (0x9d60 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "L2 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
             "l3_export_energy_reactive_q4": (0x9d62 + self.offset, 2, registerType.HOLDING, registerDataType.UINT32, int, "L3 Exported Energy (Reactive) Quadrant 4", "VArh", 3),
             "energy_reactive_scale": (0x9d64 + self.offset, 1, registerType.HOLDING, registerDataType.SCALE, int, "Energy (Reactive) Scale Factor", "", 3)
-        }
-
-class StorEdge(SolarEdge):
-    
-    def __init__(self, *args, **kwargs):
-        self.model = "StorEdge"
-        self.wordorder = Endian.LITTLE
-
-        super().__init__(*args, **kwargs)
-
-        self.registers = {
-            "export_control_mode": (0xe000, 1, registerType.HOLDING, registerDataType.UINT16, int, "Export Control Mode", EXPORT_CONTROL_MODE_MAP, 1),
-            "export_control_limit_mode": (0xe001, 1, registerType.HOLDING, registerDataType.UINT16, int, "Export Control Limit Mode", EXPORT_CONTROL_LIMIT_MAP, 1),
-            "export_control_site_limit": (0xe002, 2, registerType.HOLDING, registerDataType.SEFLOAT, float, "Export Control Site Limit", "", 1),
-            
-            "storedge_control_mode": (0xe004, 1, registerType.HOLDING, registerDataType.UINT16, int, "StorEdge Control Mode", STOREDGE_CONTROL_MODE, 1),
-            "storedge_ac_charge_policy": (0xe005, 1, registerType.HOLDING, registerDataType.UINT16, int, "StorEdge AC Charge Policy", STOREDGE_AC_CHARGE_POLICY, 1),
-            "storedge_ac_charge_limit": (0xe006, 2, registerType.HOLDING, registerDataType.SEFLOAT, float, "StorEdge AC Charge Limit (kWh or %)", "", 1),
-            "storedge_backup_reserved": (0xe008, 2, registerType.HOLDING, registerDataType.SEFLOAT, float, "StorEdge Backup Reserved (%)", "", 1),
-
-            "storedge_remote_default_command_mode": (0xe00a, 1, registerType.HOLDING, registerDataType.UINT16, int, "StorEdge Default Charge Mode", STOREDGE_CHARGE_DISCHARGE_MODE, 1),
-            "storedge_remote_command_timeout": (0xe00b, 2, registerType.HOLDING, registerDataType.UINT32, int, "StorEdge Remote Command Timeout", "", 1),
-            "storedge_remote_command_mode": (0xe00d, 1, registerType.HOLDING, registerDataType.UINT16, int, "StorEdge Remote Command Mode", STOREDGE_CHARGE_DISCHARGE_MODE, 1),
-            "storedge_remote_charge_limit": (0xe00e, 2, registerType.HOLDING, registerDataType.SEFLOAT, float, "StorEdge Remote Command Charge Limit", "", 1),
-            "storedge_remote_discharge_limit": (0xe010, 2, registerType.HOLDING, registerDataType.SEFLOAT, float, "StorEdge Remote Command Discharge Limit", "", 1),
         }
 
 class Battery(SolarEdge):
